@@ -1,0 +1,9 @@
+/node_modules
+/public/js/*
+/public/css/*
+/public/index.html
+.DS_Store
+.sass-cache
+.*.swp
+.tmp
+npm-debug.log
