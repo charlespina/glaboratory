@@ -1,31 +1,48 @@
 var React = require('react');
-var THREE = require('./../three');
+var THREE = require('./../lib/three');
 var $ = require('jquery');
 var EventEmitter = require('events').EventEmitter;
 var assign = require('object-assign');
 
 var Context = function(container) {
   this.container = container;
+  this.isPaused = false;
 
-  var aspect = this.getWidth()/this.getHeight();
-  this.camera = new THREE.PerspectiveCamera(70, aspect, 1, 1000);
-  this.camera.position.z = 400;
+  this.reset();
 
   this.renderer = new THREE.WebGLRenderer();
   $(this.container).append(this.renderer.domElement);
   this.resize();
 
   this.time = new Date();
-  this.scene = new THREE.Scene();
 
   this.emit('scene-setup');
 
   // setup render callbacks
-  $(window).resize(this.resize.bind(this));
   this.animate();
 }
 
 Context.prototype = assign(Context.prototype, EventEmitter.prototype);
+
+Context.prototype.reset = function() {
+  this.removeAllListeners();
+
+  var aspect = this.getWidth()/this.getHeight();
+  this.camera = new THREE.PerspectiveCamera(70, aspect, 1, 1000);
+  this.camera.position.z = 400;
+
+  this.scene = new THREE.Scene();
+}
+
+Context.prototype.setPaused = function(v) {
+  this.isPaused = v;
+}
+
+Context.prototype.dispose = function() {
+  this.removeAllListeners();
+  this.disposed = true;
+  this.renderer.dispose();
+}
 
 Context.prototype.resize  = function() {
   this.renderer.setSize(this.getWidth(), this.getHeight());
@@ -34,15 +51,25 @@ Context.prototype.resize  = function() {
 }
 
 Context.prototype.renderDefaultCamera = function() {
-  this.renderer.render(this.scene, this.camera);
+  if (this.renderer)
+    this.renderer.render(this.scene, this.camera);
 }
 
 Context.prototype.animate = function() {
+  if (this.disposed) 
+    return;
+
   setTimeout(requestAnimationFrame.bind(null, this.animate.bind(this)), 60);
+
+  if (this.isPaused)
+    return;
+
   var now = new Date();
-  this.emit('update', (now - this.time));
-  if (!this.emit('render')) 
+  this.emit('update', (now - this.time), this);
+
+  if (!this.emit('render', this)) 
     this.renderDefaultCamera();
+
   this.time = now;
 }
 
@@ -63,8 +90,25 @@ var WebGLView = React.createClass({
     return this.context;
   },
 
+  resize: function() {
+    if (this.context) {
+      this.context.resize();
+    }
+  },
+
+  reset: function() {
+    var container = this.refs.context.getDOMNode();
+    $(container).empty();
+    if (this.context) {
+      this.context.dispose();
+      this.context = null;
+    }
+    this.context = new Context(container);
+  },
+
   componentDidMount: function() {
-    this.context = new Context(this.refs.context.getDOMNode());
+    $(window).resize(this.resize);
+    this.reset();
   },
 });
 

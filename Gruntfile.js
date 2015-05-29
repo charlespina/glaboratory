@@ -14,7 +14,7 @@ module.exports = function(grunt) {
 
     browserify: {
       options: {
-        transform: [ require('grunt-react').browserify ]
+        transform: [ require('stringify')(['.vert', '.frag']), require('grunt-react').browserify ]
       },
       js: {
         src: 'src/app.js',
@@ -52,7 +52,7 @@ module.exports = function(grunt) {
 
     watch: {
       react: {
-        files: ['src/**/*.js'],
+        files: ['src/**/*.js', 'src/**/*.frag', 'src/**/*.vert'],
         tasks: ['browserify'],
         options: {
           atBegin: true,
