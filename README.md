@@ -1,7 +1,10 @@
 # glaboratory
 A WebGL playground, with a react-based front-end.
 
-To run:
-1. `node bin/web-server.js`
-2. `$ grunt`
-3. navigate to http://localhost:8000/index.html
+To get started:
+
+1.   `cd glaboratory`
+1.   `node bin/web-server.js`
+1.   `grunt`
+1.   navigate to http://localhost:8000/index.html
+1.   try adding an experiment in src/experiments, and adding it to the list of experiments in app.js
