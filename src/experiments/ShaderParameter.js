@@ -1,12 +1,14 @@
 var assign = require('object-assign');
 var Parameter = require('./Parameter');
 
+function prettyPrint(s) {
+  return s.replace("_", " ");
+}
+
 var ShaderParameter = function(name, desc) {
-  Parameter.call(this, name, desc);
-  this.uniform = {
-    value: this.value,
-    type: desc.type,
-  };
+  var displayName = prettyPrint(name);
+  Parameter.call(this, displayName, desc);
+  this.uniform = desc;
 }
 
 ShaderParameter.prototype = assign(ShaderParameter.prototype, Parameter.prototype);
@@ -22,15 +24,18 @@ ShaderParameter.fromUniformHash = function(uniforms) {
 
   Object.keys(uniforms).sort().forEach(function(name) {
     var uniform = uniforms[name];
-    if (uniform.type != 't')
-      params.push(new ShaderParameter(name, uniform));
+    if (uniform.type == 't')
+      return;
+    if (uniform.hidden)
+      return;
+    params.push(new ShaderParameter(name, uniform));
   });
 
   return params;
 }
 
 ShaderParameter.createUniformHash = function(params) {
-  var uniforms;
+  var uniforms = {};
   params.forEach(function(p) {
     uniforms[p.name] = p.uniform;
   });
@@ -39,6 +44,7 @@ ShaderParameter.createUniformHash = function(params) {
 
 ShaderParameter.prototype.setValue = function(value) {
   Parameter.prototype.setValue.call(this, value);
+  console.log("ShaderParameter.setValue");
   this.uniform.value = value;
   this.uniform.needsUpdate = true;
 }

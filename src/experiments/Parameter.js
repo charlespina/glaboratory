@@ -6,9 +6,9 @@ var Parameter = function(name, desc) {
 }
 
 Parameter.prototype.clamp = function(v) {
-  if (this.min !== undefined) 
+  if (this.min !== undefined)
     v = Math.max(this.min, v);
-  
+
   if (this.max !== undefined)
     v = Math.min(this.max, v);
 

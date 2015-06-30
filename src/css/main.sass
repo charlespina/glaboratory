@@ -1,5 +1,6 @@
 #site
   height: 100vh
+  background-color: black
   overflow: hidden
   .row
     height: calc(100% - 50px)
@@ -13,25 +14,33 @@
   padding-left: 0
 
 .sidebar
+  opacity: 0.5
+  background-color: #333
+  color: #aaa
+  transition: opacity 0.5s ease
   padding-top: 10px
   height: 100%
+  &:hover
+    opacity: 1.0
 
 .slider-input
-  display: block 
+  display: block
   width: 100%
+  margin: 0 0 15px 0
   label
     padding: 0 5px
     display: block
+    text-transform: capitalize
   .slider
-    background-color: #888
-    margin: 5px 0 10px 0
+    background-color: #aaa
+    margin: 8px 0 0 0
     height: 2px
   .handle
     border-radius: 6px
     margin-top: -5px
     height: 12px
     width: 12px
-    border: 2px solid #666
+    border: 2px solid #fff
     background-color: white
     &:active, &:hover
       width: 16px

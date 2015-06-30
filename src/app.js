@@ -12,8 +12,8 @@ var Input = BS.Input;
 var THREE = require('./lib/three');
 
 var experiments = [
-  require('./experiments/PBR'),
-  require('./experiments/HelloWorld'),
+  require('./experiments/PhysicallyBasedRendering'),
+  // require('./experiments/HelloWorld'),
 ];
 
 var ContentPanel = React.createClass({
@@ -95,11 +95,18 @@ var Sidebar = React.createClass({
       );
     });
 
-    return (
-      <div className="col-xs-5 col-sm-3 sidebar">
+    var experimentSelector;
+    if (this.props.experiments.length > 1) {
+      experimentSelector = (
         <Input type="select" onChange={this.onChangeExperiment}>
           {experimentOptions}
         </Input>
+      );
+    }
+
+    return (
+      <div className="col-xs-5 col-sm-3 sidebar">
+        {experimentSelector}
         {inputs}
       </div>
     );
@@ -125,10 +132,11 @@ var App = React.createClass({
     return (
       <div id="site" className="container-fluid">
         <div className="row">
-          <Navbar />
+          <Navbar brand={activeExperiment.name}>
+          </Navbar>
           <ContentPanel experiment={activeExperiment}/>
           <Sidebar onChangeExperiment={this.onChangeExperiment}
-            experiments={experiments} 
+            experiments={experiments}
             parameters={activeExperiment.parameters}/>
         </div>
       </div>
