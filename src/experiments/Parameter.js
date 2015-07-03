@@ -3,6 +3,7 @@ var Parameter = function(name, desc) {
   this.min = desc.min;
   this.max = desc.max;
   this.value = desc.value;
+  this.type = desc.type;
 }
 
 Parameter.prototype.clamp = function(v) {

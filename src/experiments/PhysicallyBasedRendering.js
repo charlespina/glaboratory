@@ -79,6 +79,7 @@ var uniforms = {
   },
   "light_direction": {
     type: 'c',
+    hidden: true,
     value: (new THREE.Color(0xFFFFFF))
   },
 };
@@ -86,9 +87,8 @@ var uniforms = {
 var exp = new Experiment("Physically Based Rendering");
 
 exp.addParameters(ShaderParameter.fromUniformHash(uniforms));
+
 exp.setup = function(context) {
-  // context.camera = new THREE.PerspectiveCamera( 20, context.getWidth() / context.getHeight(), 0.1, 100);
-  // context.camera.position.z = 1;
   var material = new THREE.ShaderMaterial({
     uniforms: uniforms,
     vertexShader: vertShader,
@@ -98,8 +98,6 @@ exp.setup = function(context) {
   var geo = new THREE.SphereGeometry(100, 64, 46);
   geo.computeTangents();
 
-  /*context.camera = new THREE.PerspectiveCamera(70,
-    context.getWidth() / context.getHeight(), 1, 300);*/
   context.camera.position.z = 200;
 
   this.mesh = new THREE.Mesh(geo, material);

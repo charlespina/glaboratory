@@ -2,12 +2,15 @@ var assign = require('object-assign');
 var Parameter = require('./Parameter');
 
 function prettyPrint(s) {
-  return s.replace("_", " ");
+  return s.replace(/_/g, " ");
 }
 
 var ShaderParameter = function(name, desc) {
   var displayName = prettyPrint(name);
   Parameter.call(this, displayName, desc);
+
+  // we have to keep the uniform description around
+  // so that updates are properly forwarded to threejs
   this.uniform = desc;
 }
 
@@ -44,7 +47,6 @@ ShaderParameter.createUniformHash = function(params) {
 
 ShaderParameter.prototype.setValue = function(value) {
   Parameter.prototype.setValue.call(this, value);
-  console.log("ShaderParameter.setValue");
   this.uniform.value = value;
   this.uniform.needsUpdate = true;
 }
