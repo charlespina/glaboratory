@@ -18,6 +18,7 @@ var Col = BS.Col;
 var THREE = require('./lib/three');
 
 var experiments = [
+  require('./experiments/ReflectionBlur'),
   require('./experiments/PhysicallyBasedRendering'),
   // require('./experiments/HelloWorld'),
 ];
