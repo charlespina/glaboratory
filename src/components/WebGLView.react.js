@@ -8,7 +8,7 @@ var Context = function(container) {
   this.container = container;
   this.isPaused = false;
 
-  this.reset();
+  this.init();
 
   this.renderer = new THREE.WebGLRenderer();
   $(this.container).append(this.renderer.domElement);
@@ -24,13 +24,10 @@ var Context = function(container) {
 
 Context.prototype = assign(Context.prototype, EventEmitter.prototype);
 
-Context.prototype.reset = function() {
-  this.removeAllListeners();
-
+Context.prototype.init = function() {
   var aspect = this.getWidth()/this.getHeight();
   this.camera = new THREE.PerspectiveCamera(70, aspect, 1, 1000);
   this.camera.position.z = 400;
-
   this.scene = new THREE.Scene();
 }
 
@@ -56,7 +53,7 @@ Context.prototype.renderDefaultCamera = function() {
 }
 
 Context.prototype.animate = function() {
-  if (this.disposed) 
+  if (this.disposed)
     return;
 
   setTimeout(requestAnimationFrame.bind(null, this.animate.bind(this)), 60);
@@ -67,7 +64,7 @@ Context.prototype.animate = function() {
   var now = new Date();
   this.emit('update', (now - this.time), this);
 
-  if (!this.emit('render', this)) 
+  if (!this.emit('render', this))
     this.renderDefaultCamera();
 
   this.time = now;

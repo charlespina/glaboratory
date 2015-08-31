@@ -27,7 +27,7 @@ var uniforms = {
   },
   "reflection_map": {
     type: 't',
-    value: null, 
+    value: null,
   },
   "roughness_constant": {
     type: 'f',

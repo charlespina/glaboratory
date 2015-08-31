@@ -21,6 +21,7 @@ var THREE = require('./lib/three');
 var experiments = [
   require('./experiments/EnvironmentBlur/index'),
   require('./experiments/PBR/index'),
+  require('./experiments/Tea/index')
 ];
 
 var ContentPanel = React.createClass({
@@ -241,7 +242,6 @@ var ExperimentViewer = React.createClass({
   mixins: [Router.State],
 
   render: function() {
-    console.log("Whats up");
     var Navbar = BS.Navbar;
 
     var activeExperimentIndex = 0;
@@ -277,7 +277,7 @@ var App = React.createClass({
 var routes = (
   <Route path="/" handler={App}>
     <Route name="index" path="/" handler={ExperimentIndex} />
-    <Route name="exp" path="/exp/:experimentName" handler={ExperimentViewer} /> 
+    <Route name="exp" path="/exp/:experimentName" handler={ExperimentViewer} />
   </Route>
 );
 
