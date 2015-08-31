@@ -1,5 +1,6 @@
 var React = require('react');
 var Router = require('react-router');
+var Link = Router.Link;
 var Route = Router.Route;
 var RouteHandler = Router.RouteHandler;
 var BS = require('react-bootstrap');
@@ -18,9 +19,8 @@ var Col = BS.Col;
 var THREE = require('./lib/three');
 
 var experiments = [
-  require('./experiments/ReflectionBlur'),
-  require('./experiments/PhysicallyBasedRendering'),
-  // require('./experiments/HelloWorld'),
+  require('./experiments/EnvironmentBlur/index'),
+  require('./experiments/PBR/index'),
 ];
 
 var ContentPanel = React.createClass({
@@ -185,10 +185,6 @@ var SliderInput = React.createClass({
 });
 
 var Sidebar = React.createClass({
-  onChangeExperiment: function(e) {
-    this.props.onChangeExperiment(e.target.value);
-  },
-
   render: function() {
     var Button = BS.Button;
     var ButtonToolbar = BS.ButtonToolbar;
@@ -206,27 +202,8 @@ var Sidebar = React.createClass({
       }
     });
 
-    var experimentOptions = [];
-    this.props.experiments.forEach(function(exp, i) {
-      experimentOptions.push(
-        <option key={i} value={i}>
-          {exp.name}
-        </option>
-      );
-    });
-
-    var experimentSelector;
-    if (this.props.experiments.length > 1) {
-      experimentSelector = (
-        <Input type="select" onChange={this.onChangeExperiment}>
-          {experimentOptions}
-        </Input>
-      );
-    }
-
     return (
       <div className="col-xs-5 col-sm-3 sidebar">
-        {experimentSelector}
         {inputs}
       </div>
     );
@@ -235,37 +212,73 @@ var Sidebar = React.createClass({
 
 var Routes;
 
-var App = React.createClass({
-  getInitialState: function() {
-    return {
-      activeExperimentIndex: 0
-    };
-  },
-
-  onChangeExperiment: function(idx) {
-    this.setState({activeExperimentIndex: idx});
-  },
-
+var ExperimentIndex = React.createClass({
   render: function() {
-    var Navbar = BS.Navbar;
-    var activeExperiment = experiments[this.state.activeExperimentIndex];
+    var experimentList = experiments.map(function(exp, i) {
+      return (
+        <li key={i}>
+          <Link to="exp" params={{experimentName:exp.name}}>
+            {exp.name}
+          </Link>
+        </li>
+      );
+    });
+
+    experimentList = <ul>{experimentList}</ul>;
     return (
-      <div id="site" className="container-fluid">
-        <div className="row">
-          <Navbar brand={activeExperiment.name}>
-          </Navbar>
-          <ContentPanel experiment={activeExperiment}/>
-          <Sidebar onChangeExperiment={this.onChangeExperiment}
-            experiments={experiments}
-            parameters={activeExperiment.parameters}/>
+      <div className="row">
+        <Navbar brand="List of Experiments">
+        </Navbar>
+        <div>
+          {experimentList}
         </div>
       </div>
     );
   }
 });
 
+var ExperimentViewer = React.createClass({
+  mixins: [Router.State],
+
+  render: function() {
+    console.log("Whats up");
+    var Navbar = BS.Navbar;
+
+    var activeExperimentIndex = 0;
+    experiments.forEach(function(exp, i) {
+      if (exp.name == this.getParams().experimentName) {
+        activeExperimentIndex = i;
+      }
+    }.bind(this));
+
+    var activeExperiment = experiments[activeExperimentIndex];
+
+    return (
+      <div className="row">
+        <Navbar brand={activeExperiment.name}>
+        </Navbar>
+        <ContentPanel experiment={activeExperiment}/>
+        <Sidebar parameters={activeExperiment.parameters}/>
+      </div>
+    );
+  }
+});
+
+var App = React.createClass({
+  render: function() {
+    return (
+      <div id="site" className="container-fluid">
+        <RouteHandler />
+      </div>
+    );
+  }
+});
+
 var routes = (
-  <Route name="app" path="/" handler={App} />
+  <Route path="/" handler={App}>
+    <Route name="index" path="/" handler={ExperimentIndex} />
+    <Route name="exp" path="/exp/:experimentName" handler={ExperimentViewer} /> 
+  </Route>
 );
 
 Router.run(routes, function(Handler, state) {

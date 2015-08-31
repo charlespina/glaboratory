@@ -1,6 +1,6 @@
-var Experiment = require('./Experiment');
-var Parameter = require('./Parameter');
-var THREE = require('../lib/three');
+var Experiment = require('../../core/Experiment');
+var Parameter = require('../../core/Parameter');
+var THREE = require('../../lib/three');
 
 var helloWorld = new Experiment("Testing");
 

@@ -1,7 +1,7 @@
-var Experiment = require('./Experiment');
-var ShaderParameter = require('./ShaderParameter');
-var Parameter = require('./Parameter');
-var THREE = require('../lib/three');
+var Experiment = require('../../core/Experiment');
+var ShaderParameter = require('../../core/ShaderParameter');
+var Parameter = require('../../core/Parameter');
+var THREE = require('../../lib/three');
 var vertShader = require('./shaders/standard.vert');
 var fragShader = require('./shaders/reflection_blur.frag');
 var vdc = require('vdc');
@@ -23,12 +23,11 @@ var createVanDerCorputSequenceData = function(N) {
 var uniforms = {
   "vdc_map":{
     type: 't',
-    value: new THREE.DataTexture(createVanDerCorputSequenceData(N), N, 1, THREE.LuminanceFormat, THREE.FloatType)
+    value: null,
   },
   "reflection_map": {
     type: 't',
-    value: THREE.ImageUtils.loadTexture("textures/reflection.png")
-    //value: THREE.ImageUtils.loadTexture("textures/reflection2.gif")
+    value: null, 
   },
   "roughness_constant": {
     type: 'f',
@@ -38,14 +37,15 @@ var uniforms = {
   },
 };
 
-var exp = new Experiment("Reflection Blur");
+var exp = new Experiment("Environment Blur");
 
 exp.addParameters(ShaderParameter.fromUniformHash(uniforms));
 
-
-
 exp.setup = function(context) {
+  uniforms.vdc_map.value = new THREE.DataTexture(createVanDerCorputSequenceData(N), N, 1, THREE.LuminanceFormat, THREE.FloatType);
   uniforms.vdc_map.value.needsUpdate = true;
+  uniforms.reflection_map.value = THREE.ImageUtils.loadTexture("textures/reflection.png");
+  // THREE.ImageUtils.loadTexture("textures/reflection2.gif");
 
   var material = new THREE.ShaderMaterial({
     uniforms: uniforms,

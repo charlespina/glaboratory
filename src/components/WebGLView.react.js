@@ -96,6 +96,11 @@ var WebGLView = React.createClass({
     }
   },
 
+  init: function() {
+    var container = this.refs.context.getDOMNode();
+    this.context = new Context(container)
+  },
+
   reset: function() {
     var container = this.refs.context.getDOMNode();
     $(container).empty();
@@ -103,13 +108,23 @@ var WebGLView = React.createClass({
       this.context.dispose();
       this.context = null;
     }
-    this.context = new Context(container);
+  },
+
+  componentDidReceiveProps: function() {
+    $(window).resize(this.resize);
+    this.reset();
+    this.init();
   },
 
   componentDidMount: function() {
     $(window).resize(this.resize);
     this.reset();
+    this.init();
   },
+
+  componentWillUnmount: function() {
+    this.reset();
+  }
 });
 
 module.exports = WebGLView;
