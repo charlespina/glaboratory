@@ -175,7 +175,7 @@ void main() {
     float Gv = GeometryTerm(roughness, V, N, H);
     vec3 F = FresnelTerm(VdH, F0);
 
-    vec3 specular_contribution = F*(Gl*Gv*D/(4.0*NdL*NdV));
+    vec3 specular_contribution = F*(Gl*Gv*D/(4.0*NdL*NdV + 0.001));
 
     // metals don't have a diffuse contribution, so turn off the diffuse color
     // when the material is metallic
