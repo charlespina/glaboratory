@@ -5,6 +5,17 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
 
+    connect: {
+      server: {
+        options: {
+          port: 8000,
+          hostname: 'localhost',
+          open: true,
+          base: 'public'
+        }
+      }
+    },
+
     exec: {
       serve: {
         command: "node bin/web-server.js",
@@ -120,7 +131,7 @@ module.exports = function(grunt) {
   });
   
   grunt.registerTask('serve', ['exec:serve']);
-  grunt.registerTask('default', ['watch']);
+  grunt.registerTask('default', ['connect', 'watch']);
   grunt.registerTask('build', [ 
     'concat:sass',  // produces temp src/css/mixamo.sass
     'sass:prod',
