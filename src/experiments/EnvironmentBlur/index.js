@@ -9,6 +9,8 @@ var vdc = require('vdc');
 var DIM = 32;
 var N = DIM*DIM; // 1024
 
+console.log(THREE.ShaderPass);
+
 var createVanDerCorputSequenceData = function(N) {
   var vdcData = new Float32Array(N);
 
@@ -39,7 +41,15 @@ var uniforms = {
 
 var exp = new Experiment("Environment Blur");
 
+exp.onParameterChange = function(value) {
+  this.dirty = true;
+}
+
 exp.addParameters(ShaderParameter.fromUniformHash(uniforms));
+exp.parameters.forEach(function(param) {
+  console.log("testing");
+  param.onChange = this.onParameterChange.bind(this);
+}.bind(exp));
 
 exp.setup = function(context) {
   uniforms.vdc_map.value = new THREE.DataTexture(createVanDerCorputSequenceData(N), N, 1, THREE.LuminanceFormat, THREE.FloatType);
@@ -60,9 +70,18 @@ exp.setup = function(context) {
 
   this.mesh = new THREE.Mesh(geo, material);
   context.scene.add(this.mesh);
+
+  this.dirty = true;
 };
 
 exp.update = function(dt) {
+};
+
+exp.render = function(context) {
+  if (this.dirty) {
+    context.renderDefaultCamera();
+    this.dirty = false;
+  }
 };
 
 module.exports = exp;

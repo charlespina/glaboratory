@@ -24,13 +24,13 @@ vec3 gamma(vec3 color) {
 vec3 ImportanceSampleGGX( vec2 Xi, float Roughness, vec3 N ) {
   float a = Roughness * Roughness;
   float Phi = 2.0 * PI * Xi.x;
-  float CosTheta = sqrt( (1.0 - Xi.y) / ( 1.0 + (a*a - 1.0) * Xi.y ) );
+  float CosTheta = sqrt( (1.0 - Xi.y) / ( 1.0 + (a*a - 1.0) * Xi.y  + 0.000001) );
   float SinTheta = sqrt( 1.0 - CosTheta * CosTheta );
   vec3 H;
   H.x = SinTheta * cos( Phi );
   H.y = SinTheta * sin( Phi );
   H.z = CosTheta;
-  vec3 UpVector = abs(N.z) < 0.999 ? vec3(0.0,0.0,1.0) : vec3(1.0,0.0,0.0);
+  vec3 UpVector = vec3(0.0, 1.0, 0.0); //abs(N.z) < 0.999 ? vec3(0.0,0.0,1.0) : vec3(1.0,0.0,0.0);
   vec3 TangentX = normalize( cross( UpVector, N ) );
   vec3 TangentY = cross( N, TangentX );
   // Tangent to world space
