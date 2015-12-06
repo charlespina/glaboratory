@@ -101,7 +101,7 @@ var WebGLView = React.createClass({
   reset: function() {
     var container = this.refs.context.getDOMNode();
     $(container).empty();
-    if (this.context) {
+    if (this.context && this.context.dispose) {
       this.context.dispose();
       this.context = null;
     }

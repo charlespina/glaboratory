@@ -8,13 +8,6 @@ var WebGLView = require('./components/WebGLView.react');
 var assign = require('object-assign');
 var ReactSlider = require('react-slider');
 var ColorPicker = require('react-color-picker');
-var Navbar = BS.Navbar;
-var Input = BS.Input;
-var OverlayMixin = BS.OverlayMixin;
-var Button = BS.Button;
-var Modal = BS.Modal;
-var Row = BS.Row;
-var Col = BS.Col;
 
 var THREE = require('./lib/three');
 
@@ -45,7 +38,7 @@ var ContentPanel = React.createClass({
 
   render: function() {
     return (
-      <div className="col-xs-7 col-sm-9 content-panel">
+      <div className="twelve wide column content-panel">
         <WebGLView ref="view" />
       </div>
     );
@@ -53,16 +46,20 @@ var ContentPanel = React.createClass({
 });
 
 var ColorPickerInput = React.createClass({
-  mixins: [OverlayMixin],
-
-  getInitialState: function() {
-    return {
-      isModalOpen: false
-    };
+  handleToggle: function(e) {
+    e.stopPropagation();
+    e.preventDefault();
   },
 
-  handleToggle: function() {
-    this.setState({isModalOpen: !this.state.isModalOpen});
+  componentDidMount: function() {
+    console.log(this.refs.modal.getDOMNode());
+    $(this.refs.input.getDOMNode()).popup({
+      on: 'click',
+      position: 'bottom center'
+    });
+  },
+
+  componentWillUnmount: function() {
   },
 
   onChange: function(value) {
@@ -71,43 +68,41 @@ var ColorPickerInput = React.createClass({
     c.setHex(value.replace("#", "0x"));
 
     this.props.parameter.setValue(c)
+    this.forceUpdate();
   },
 
   render: function() {
-    return (
-      <div className="color-picker-input">
-        <Input wrapperClassName="wrapper" bsSize="small" label={this.props.parameter.name}>
-          <Row>
-            <Col xs={5} sm={4}>
-              <a href="#" className="color-swatch" onClick={this.handleToggle}
-                style={{
-                  backgroundColor: "#" + this.props.parameter.uniform.value.getHexString()
-                }} />
-            </Col>
-            <Col xs={5} sm={4}>
-              <a href="#" className="color-name" onClick={this.handleToggle}>
-                #{this.props.parameter.uniform.value.getHexString()}
-              </a>
-            </Col>
-          </Row>
-        </Input>
-      </div>
-    );
-  },
-
-  renderOverlay: function() {
-    if (!this.state.isModalOpen) {
-      return <span/>;
-    }
-
-    return (
-      <Modal className="color-picker-modal" title={this.props.parameter.name} closeButton onRequestHide={this.handleToggle}>
-        <div className='modal-body'>
+    var colorPickerModal = (
+      <div>
+        <div className="ui small header">
+          {this.props.parameter.name}
+        </div>
+        <div className="content">
           <ColorPicker defaultValue={this.props.parameter.uniform.value.getHexString()}
             onChange={this.onChange}
+            saturationWidth="calc(100% - 30px)"
+            hueWidth="20px"
             onDrag={this.onChange} />
         </div>
-      </Modal>
+      </div>
+    );
+
+    return (
+      <div className="color-picker-input">
+        <div ref="input" className="ui fluid action input">
+          <span className="color-swatch"
+            style={{
+              backgroundColor: "#" + this.props.parameter.uniform.value.getHexString()
+            }}>
+          </span>
+          <div className="ui icon button">
+            <i className="eyedropper icon" />
+          </div>
+        </div>
+        <div ref="modal" className="ui fluid popup bottom center color-picker-modal">
+          {colorPickerModal}
+        </div>
+      </div>
     );
   }
 })
@@ -160,26 +155,24 @@ var SliderInput = React.createClass({
     var data = this.props.parameter;
     return (
       <div className="slider-input">
-        <Input wrapperClassName="wrapper" bsSize="small" label={this.props.parameter.name}>
-          <Row>
-            <Col xs={5} sm={4}>
-              <Input value={this.state.value}
-                type="text"
-                pattern="[1234567890.]*"
-                onChange={this.onTextChange}
-                onBlur={this.onTextChanged} />
-            </Col>
-            <Col xs={7} sm={8}>
-              <ReactSlider
-                name={this.props.parameter.name}
-                step={data.step === undefined? 0.01 : data.step}
-                min={data.min === undefined? 0 : data.min}
-                max={data.max === undefined? 1 : data.max}
-                onChange={this.onChange}
-                value={data.value} />
-            </Col>
-          </Row>
-        </Input>
+        <div className="ui grid">
+          <div className="ten wide column">
+            <ReactSlider
+              name={this.props.parameter.name}
+              step={data.step === undefined? 0.01 : data.step}
+              min={data.min === undefined? 0 : data.min}
+              max={data.max === undefined? 1 : data.max}
+              onChange={this.onChange}
+              value={data.value} />
+          </div>
+          <div className="six wide column">
+            <input value={this.state.value}
+              type="text"
+              pattern="[1234567890.]*"
+              onChange={this.onTextChange}
+              onBlur={this.onTextChanged} />
+          </div>
+        </div>
       </div>
     );
   }
@@ -187,24 +180,31 @@ var SliderInput = React.createClass({
 
 var Sidebar = React.createClass({
   render: function() {
-    var Button = BS.Button;
-    var ButtonToolbar = BS.ButtonToolbar;
-
     var inputs = [];
     this.props.parameters.forEach(function(param, i) {
       if (param.uniform.type == 'c') {
         inputs.push(
-          <ColorPickerInput key={i} parameter={param} />
+          <div className="ui form" key={i}>
+            <div className="field">
+              <label>{param.name}</label>
+              <ColorPickerInput parameter={param} />
+            </div>
+          </div>
         );
       } else {
         inputs.push(
-          <SliderInput key={i} parameter={param} />
+          <div className="ui form" key={i}>
+            <div className="field">
+              <label>{param.name}</label>
+              <SliderInput parameter={param} />
+            </div>
+          </div>
         );
       }
     });
 
     return (
-      <div className="col-xs-5 col-sm-3 sidebar">
+      <div className="four wide column sidebar">
         {inputs}
       </div>
     );
@@ -227,9 +227,7 @@ var ExperimentIndex = React.createClass({
 
     experimentList = <ul>{experimentList}</ul>;
     return (
-      <div className="row">
-        <Navbar brand="List of Experiments">
-        </Navbar>
+      <div className="ui grid">
         <div>
           {experimentList}
         </div>
@@ -242,7 +240,6 @@ var ExperimentViewer = React.createClass({
   mixins: [Router.State],
 
   render: function() {
-    var Navbar = BS.Navbar;
 
     var activeExperimentIndex = 0;
     experiments.forEach(function(exp, i) {
@@ -254,9 +251,7 @@ var ExperimentViewer = React.createClass({
     var activeExperiment = experiments[activeExperimentIndex];
 
     return (
-      <div className="row">
-        <Navbar brand={activeExperiment.name}>
-        </Navbar>
+      <div className="ui padded equal height grid experiment-viewer-grid">
         <ContentPanel experiment={activeExperiment}/>
         <Sidebar parameters={activeExperiment.parameters}/>
       </div>
