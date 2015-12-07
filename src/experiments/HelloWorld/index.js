@@ -4,8 +4,8 @@ var THREE = require('../../lib/three');
 
 var helloWorld = new Experiment("Testing");
 
-helloWorld.addParameter(new Parameter("Test param", { value: 1 }));
-helloWorld.addParameter(new Parameter("Test paramaamamama", { value: 2 }));
+helloWorld.addParameter(new Parameter("Test param", { type: 'i', value: 1 }));
+helloWorld.addParameter(new Parameter("Test paramaamamama", { type: 'f', value: 2 }));
 
 helloWorld.setup = function(context) {
   var geo = new THREE.SphereGeometry(100, 64, 64);

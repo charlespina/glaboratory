@@ -11,6 +11,13 @@ var SharedVert = require('./shaders/Shared.vert');
 var exp = new Experiment("Reaction Diffusion");
 
 var SIM_RESOLUTION = 512;
+var SYMMETRY_MODES = {
+  NONE: {name:'No Symmetry', value:0},
+  HORIZONTAL: {name:'Horizontal Symmetry', value:1},
+  VERTICAL: {name:'Vertical Symmetry', value:2},
+  RADIAL_SYMMETRY: {name:'Radial Symmetry', value: 3},
+};
+var DEFAULT_SYMMETRY_MODE=SYMMETRY_MODES.RADIAL_SYMMETRY;
 
 var mouse = { pressed: false, x: 1, y: 1 };
 var vector = new THREE.Vector3();
@@ -105,8 +112,8 @@ var compute = {
       max: SIM_RESOLUTION/5.0
     },
     "brush_position": {
-      type: 'v3',
-      value: new THREE.Vector3(),
+      type: 'v2',
+      value: new THREE.Vector2(),
       hidden: true
     },
     "brush_active": {
@@ -138,9 +145,9 @@ var compute = {
       max: 0.1,
       value: 0.062
     },
-    "axis_of_symmetry": {
-      type: 'v2',
-      value: new THREE.Vector2(0.0, 1.0),
+    "symmetry_mode": {
+      type: 'i',
+      value: DEFAULT_SYMMETRY_MODE.value,
       hidden: true
     },
     "texture": {
@@ -150,33 +157,30 @@ var compute = {
   }
 };
 
-var speedParam = new Parameter("speed", {value:5, min:1, max:20, type:'i'});
-exp.addParameter(speedParam);
-
-var reset = new Trigger("Reset Simulation", function() {
-  compute.shaderParameters.texture.value = compute.initialTexture;
-  compute.initialTexture.needsUpdate = true;
-});
-exp.addParameter(reset);
-
-exp.addParameter(new Trigger("Test Button"));
-
 var displayGroupParams = ShaderParameter.fromUniformHash(display.shaderParameters);
 var displayGroup = new ParameterGroup("Display", {active: true, parameters: displayGroupParams});
 exp.addParameter(displayGroup);
 
 var computeGroupParams = ShaderParameter.fromUniformHash(compute.shaderParameters);
 computeGroupParams.push(new Parameter("Axis of Symmetry", {
-  value: {name:'Horizontal', value: new THREE.Vector2(0.0, 1.0)},
+  value: DEFAULT_SYMMETRY_MODE,
   type: 'choice',
   choices: [
-    {name:'Horizontal', value: new THREE.Vector2(0.0, 1.0)},
-    {name:'Vertical', value: new THREE.Vector2(1.0, 0.0)}
+    SYMMETRY_MODES.NONE,
+    SYMMETRY_MODES.HORIZONTAL,
+    SYMMETRY_MODES.VERTICAL,
+    SYMMETRY_MODES.RADIAL_SYMMETRY
   ],
   onChange: function(newValue) {
-    compute.shaderParameters.axis_of_symmetry.value = newValue.value;
-    compute.shaderParameters.axis_of_symmetry.needsUpdate;
+    compute.shaderParameters.symmetry_mode.value = newValue.value;
+    compute.shaderParameters.symmetry_mode.needsUpdate;
   }
+}));
+var speedParam = new Parameter("Speed", {type:'i', value:5, min:1, max:20});
+computeGroupParams.push(speedParam);
+computeGroupParams.push(new Trigger("Reset Simulation", function() {
+  compute.shaderParameters.texture.value = compute.initialTexture;
+  compute.initialTexture.needsUpdate = true;
 }));
 var computeGroup = new ParameterGroup("Simulation", {active: true, parameters: computeGroupParams});
 

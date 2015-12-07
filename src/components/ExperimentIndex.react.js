@@ -5,7 +5,7 @@ var Link = ReactRouter.Link;
 
 var ExperimentIndex = React.createClass({
   render: function() {
-    var experiments = this.props.store.experiments;
+    var experiments = ExperimentStore.experiments;
     var experimentList = experiments.map(function(exp, i) {
       return (
         <li key={i}>

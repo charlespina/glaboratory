@@ -21,7 +21,15 @@ var GenericInput = React.createClass({
   },
 
   onDropdownChange: function(e) {
-    console.log(e.target.value);
+    var name = e.target.value;
+    var choice;
+    this.props.param.choices.forEach(function(c) {
+      if (c.name == name)
+        choice = c;
+    });
+
+    if (choice)
+      this.props.param.setValue(choice);
   },
 
   render: function() {
@@ -85,10 +93,12 @@ var GenericInput = React.createClass({
       );
     } else if (param.type == 'choice') {
       var choices = param.choices.map(function(choice, i) {
-        return <option>{choice.name}</option>;
+        return <option key={i} value={choice.name}>{choice.name}</option>;
       });
       return (
-        <select className='ui dropdown' onChange={this.onDropdownChange}>
+        <select className='ui small fluid dropdown link item'
+          defaultValue={param.value.name}
+          onChange={this.onDropdownChange}>
           {choices}
         </select>
       );
@@ -102,13 +112,14 @@ var Sidebar = React.createClass({
     var container = null;
     var remap = {
       'group': 'accordion',
-      'trigger': 'menu'
+      'trigger': 'menu',
     };
     this.props.parameters.forEach(function(param, i) {
-      if (remap[param.type] !== undefined) {
-        if (container === null || container.groupedType != param.type) {
+      var remappedType = remap[param.type];
+      if (remappedType !== undefined) {
+        if (container === null || container.type != remappedType) {
           container = {
-            type: remap[param.type],
+            type: remappedType,
             groupedType: param.type,
             parameters: []
           };

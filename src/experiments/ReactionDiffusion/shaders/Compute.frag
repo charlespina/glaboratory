@@ -7,7 +7,9 @@ uniform float B_diffuse;
 uniform sampler2D texture;
 uniform int resolution; // the resolution of the input image
 uniform int brush_active;
-uniform vec3 brush_position;
+uniform vec2 brush_position;
+uniform int symmetry_mode;
+uniform vec2 axis_of_symmetry;
 uniform float brush_width;
 uniform float brush_softness;
 
@@ -37,6 +39,10 @@ vec3 laplacian() {
   return total;
 }
 
+float getDistanceFromBrush(vec2 p) {
+  return distance(v_uv.xy, p + vec2(0.5, 0.5));
+}
+
 void main() {
 
   vec3 data = texture2D(texture, v_uv).rgb;
@@ -56,12 +62,34 @@ void main() {
   B_prime = B + (B_diffuse * L_B + A*pow(B,2.0) - (B_kill_rate+A_feed_rate) * B) * delta_time;
 
   if (brush_active == 1) {
-      float b = distance(v_uv.xy, brush_position.xy + vec2(0.5, 0.5));
-      float brush_width_normalized = brush_width/float(resolution);
-      float bhard = smoothstep(brush_width_normalized, 0.0, b);
-      float bsoft = bhard; // TODO
-      float bmixed = mix(bhard, bsoft, brush_softness);
-      B_prime = mix(B_prime, 1.0, bmixed);
+    float b = getDistanceFromBrush(brush_position);
+
+    if (symmetry_mode == 1) {
+      float b_sym = getDistanceFromBrush(reflect(brush_position, vec2(1.0, 0.0)));
+      b = min(b, b_sym);
+    }
+
+    if (symmetry_mode == 2) {
+      float b_sym = getDistanceFromBrush(reflect(brush_position, vec2(0.0, 1.0)));
+      b = min(b, b_sym);
+    }
+
+    if (symmetry_mode == 3) {
+      float b_sym = getDistanceFromBrush(reflect(brush_position, normalize(vec2(1.0, -1.0))));
+      b = min(b, b_sym);
+      float b_sym2 = getDistanceFromBrush(reflect(brush_position, normalize(vec2(1.0, 1.0))));
+      b = min(b, b_sym2);
+      float b_sym3 = getDistanceFromBrush(reflect(brush_position, normalize(vec2(-1.0, 1.0))));
+      b = min(b, b_sym3);
+      float b_sym4 = getDistanceFromBrush(brush_position * vec2(-1.0, -1.0));
+      b = min(b, b_sym4);
+    }
+
+    float brush_width_normalized = brush_width/float(resolution);
+    float bhard = smoothstep(brush_width_normalized, 0.0, b);
+    float bsoft = bhard; // TODO
+    float bmixed = mix(bhard, bsoft, brush_softness);
+    B_prime = mix(B_prime, 1.0, bmixed);
   }
 
   A_prime = clamp(A_prime, 0.0, 1.0);

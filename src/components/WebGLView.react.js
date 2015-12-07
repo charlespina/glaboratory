@@ -57,7 +57,7 @@ Context.prototype.animate = function() {
   if (this.disposed)
     return;
 
-  setTimeout(requestAnimationFrame.bind(null, this.animate.bind(this)), 60);
+  requestAnimationFrame(this.animate.bind(this));
 
   if (this.isPaused)
     return;
@@ -103,6 +103,11 @@ var WebGLView = React.createClass({
   },
 
   reset: function() {
+    this.dispose();
+    this.init();
+  },
+
+  dispose: function() {
     $(this.getContainer()).empty();
     if (this.ctx) {
       this.ctx.dispose();
@@ -113,17 +118,15 @@ var WebGLView = React.createClass({
   componentDidReceiveProps: function() {
     $(window).resize(this.resize);
     this.reset();
-    this.init();
   },
 
   componentDidMount: function() {
     $(window).resize(this.resize);
     this.reset();
-    this.init();
   },
 
   componentWillUnmount: function() {
-    this.reset();
+    this.dispose();
   }
 });
 

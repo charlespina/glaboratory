@@ -26,7 +26,9 @@ var ExperimentDetail = React.createClass({
       <div className="experiment-viewer">
         <div className="topbar">
           <div className="ui breadcrumb">
-            <div className="section">Home</div>
+            <div className="section">
+              <Link to="/">Home</Link>
+            </div>
             <div className="divider"> / </div>
             <div className="active section">{activeExperiment.name}</div>
           </div>

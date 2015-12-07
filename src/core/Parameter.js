@@ -5,6 +5,7 @@ var Parameter = function(name, desc) {
   this.value = desc.value;
   this.type = desc.type;
   this.choices = desc.choices;
+  this.onChange = desc.onChange;
 }
 
 Parameter.prototype.clamp = function(v) {
