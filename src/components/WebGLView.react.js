@@ -1,4 +1,5 @@
 var React = require('react');
+var ReactDOM = require('react-dom');
 var THREE = require('./../lib/three');
 var $ = require('jquery');
 var EventEmitter = require('events').EventEmitter;
@@ -80,30 +81,32 @@ Context.prototype.getHeight = function() {
 
 var WebGLView = React.createClass({
   render: function() {
-    return <div className="context" ref="context" style={{width:"100%", height:"100%"}}></div>;
+    return <div className="context" ref="ctx"></div>;
   },
 
   getContext: function() {
-    return this.context;
+    return this.ctx;
+  },
+
+  getContainer: function() {
+    return ReactDOM.findDOMNode(this.refs.ctx);
   },
 
   resize: function() {
-    if (this.context) {
-      this.context.resize();
+    if (this.ctx) {
+      this.ctx.resize();
     }
   },
 
   init: function() {
-    var container = this.refs.context.getDOMNode();
-    this.context = new Context(container)
+    this.ctx = new Context(this.getContainer());
   },
 
   reset: function() {
-    var container = this.refs.context.getDOMNode();
-    $(container).empty();
-    if (this.context && this.context.dispose) {
-      this.context.dispose();
-      this.context = null;
+    $(this.getContainer()).empty();
+    if (this.ctx) {
+      this.ctx.dispose();
+      this.ctx = null;
     }
   },
 

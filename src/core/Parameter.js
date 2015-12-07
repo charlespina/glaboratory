@@ -4,6 +4,7 @@ var Parameter = function(name, desc) {
   this.max = desc.max;
   this.value = desc.value;
   this.type = desc.type;
+  this.choices = desc.choices;
 }
 
 Parameter.prototype.clamp = function(v) {
@@ -20,6 +21,10 @@ Parameter.prototype.setValue = function(value) {
   this.value = this.clamp(value);
   if (this.onChange)
     this.onChange(this.value)
+}
+
+Parameter.prototype.getValue = function() {
+  return this.value;
 }
 
 module.exports = Parameter;

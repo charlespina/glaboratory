@@ -51,4 +51,8 @@ ShaderParameter.prototype.setValue = function(value) {
   this.uniform.needsUpdate = true;
 }
 
+ShaderParameter.prototype.getValue = function() {
+  return this.uniform.value;
+}
+
 module.exports = ShaderParameter;

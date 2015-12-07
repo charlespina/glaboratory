@@ -21,6 +21,7 @@ Experiment.prototype.addParameter = function(param) {
 }
 
 Experiment.prototype.addParameters = function(params) {
+  console.log("adding params", params);
   params.forEach(function(p) {
     this.parameters.push(p);
   }.bind(this));
