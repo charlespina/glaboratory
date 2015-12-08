@@ -4,7 +4,7 @@ uniform float A_feed_rate;
 uniform float B_kill_rate;
 uniform float A_diffuse;
 uniform float B_diffuse;
-uniform sampler2D texture;
+uniform sampler2D data_texture;
 uniform int resolution; // the resolution of the input image
 uniform int brush_active;
 uniform vec2 brush_position;
@@ -20,7 +20,7 @@ varying vec2 v_uv;
 vec3 sample(float step, float x, float y) {
   float step_u = step * (x-1.0);
   float step_v = step * (y-1.0);
-  return texture2D(texture, v_uv+vec2(step_u, step_v)).rgb;
+  return texture2D(data_texture, v_uv+vec2(step_u, step_v)).rgb;
 }
 
 vec3 laplacian() {
@@ -45,7 +45,7 @@ float getDistanceFromBrush(vec2 p) {
 
 void main() {
 
-  vec3 data = texture2D(texture, v_uv).rgb;
+  vec3 data = texture2D(data_texture, v_uv).rgb;
 
   vec3 L = laplacian();
   float L_A = L.r;
@@ -96,5 +96,4 @@ void main() {
   B_prime = clamp(B_prime, 0.0, 1.0);
 
   gl_FragColor = vec4(A_prime, B_prime, 0.0, 1.0);
-  // gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
 }

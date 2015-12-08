@@ -30,6 +30,8 @@ var GenericInput = React.createClass({
 
     if (choice)
       this.props.param.setValue(choice);
+
+    e.target.blur();
   },
 
   render: function() {
@@ -96,7 +98,7 @@ var GenericInput = React.createClass({
         return <option key={i} value={choice.name}>{choice.name}</option>;
       });
       return (
-        <select className='ui small fluid dropdown link item'
+        <select className='ui mini fluid dropdown'
           defaultValue={param.value.name}
           onChange={this.onDropdownChange}>
           {choices}

@@ -27,20 +27,25 @@ var display = {
   mesh: null,
   camera: null,
   material: null,
+  buffer: [],
   shaderParameters: {
-    "texture": {
+    "background_texture": {
       type: 't',
       value: null
     },
-    "A_color": {
-      type: 'c',
-      value: (new THREE.Color(0x000000))
+    "data_texture": {
+      type: 't',
+      value: null
     },
-    "B_color": {
+    "layer_tint": {
+      type: 'c',
+      value: (new THREE.Color(0xFFFFFF))
+    },
+    "brush_color": {
       type: 'c',
       value: (new THREE.Color(0x0064aa))
     },
-    "light_color": {
+    "hilight_color": {
       type: 'c',
       value: (new THREE.Color(0x0064aa))
     },
@@ -55,7 +60,7 @@ var display = {
       min: 2.0,
       max: 128.0
     },
-    "specular_coefficient": {
+    "highlight_strength": {
       type: 'f',
       value: 1.0,
       min: 0.0,
@@ -150,50 +155,51 @@ var compute = {
       value: DEFAULT_SYMMETRY_MODE.value,
       hidden: true
     },
-    "texture": {
+    "data_texture": {
       type: 't',
       value: null
     }
   }
 };
 
-var displayGroupParams = ShaderParameter.fromUniformHash(display.shaderParameters);
-var displayGroup = new ParameterGroup("Display", {active: true, parameters: displayGroupParams});
-exp.addParameter(displayGroup);
+function clearSimulation() {
+  clearBuffers(compute.buffer);
+}
 
-var computeGroupParams = ShaderParameter.fromUniformHash(compute.shaderParameters);
-computeGroupParams.push(new Parameter("Axis of Symmetry", {
-  value: DEFAULT_SYMMETRY_MODE,
-  type: 'choice',
-  choices: [
-    SYMMETRY_MODES.NONE,
-    SYMMETRY_MODES.HORIZONTAL,
-    SYMMETRY_MODES.VERTICAL,
-    SYMMETRY_MODES.RADIAL_SYMMETRY
-  ],
-  onChange: function(newValue) {
-    compute.shaderParameters.symmetry_mode.value = newValue.value;
-    compute.shaderParameters.symmetry_mode.needsUpdate;
-  }
-}));
-var speedParam = new Parameter("Speed", {type:'i', value:5, min:1, max:20});
-computeGroupParams.push(speedParam);
-computeGroupParams.push(new Trigger("Reset Simulation", function() {
-  compute.shaderParameters.texture.value = compute.initialTexture;
-  compute.initialTexture.needsUpdate = true;
-}));
-var computeGroup = new ParameterGroup("Simulation", {active: true, parameters: computeGroupParams});
+function clearCanvas() {
+  clearBuffers(compute.buffer);
+  clearBuffers(display.buffer);
+}
 
-exp.addParameter(computeGroup);
+function floodCanvas() {
+  clearBuffers(display.buffer, display.shaderParameters.brush_color.value);
+}
+
+function capture() {
+  exp.context.renderer.render( exp.context.scene, compute.camera, display.renderTexture, true );
+  swapBuffers(display.buffer);
+  exp.context.renderer.render( exp.context.scene, compute.camera, display.renderTexture, true );
+
+  display.renderTexture = display.buffer[0];
+  display.shaderParameters.background_texture.value = display.buffer[1];
+  clearSimulation();
+}
+
+
 
 exp.setup = function(context) {
-  initCompute(512, 512);
+  this.context = context;
+  initCompute();
   initDisplay(context);
 
   var canvas = context.container;
   $(canvas).mousemove(onMouseMove);
   $(canvas).mouseup(onMouseUp);
   $(canvas).mousedown(onMouseDown);
+};
+
+exp.dispose = function(context) {
+  this.context = null;
 };
 
 exp.update = function(dt) {
@@ -240,7 +246,7 @@ function initDisplay(context) {
   var geo = new THREE.PlaneBufferGeometry(1, 1, 1, 1);
   geo.computeTangents();
   geo.computeVertexNormals();
-  display.shaderParameters.texture.value = compute.renderTexture;
+  display.shaderParameters.data_texture.value = compute.renderTexture;
   display.material = new THREE.MeshBasicMaterial({color:0xFF0000});
   display.material = new THREE.ShaderMaterial({
     uniforms: display.shaderParameters,
@@ -251,6 +257,13 @@ function initDisplay(context) {
   display.mesh = new THREE.Mesh(geo, display.material);
   context.scene.add(display.mesh);
 
+  display.buffer.push(new THREE.WebGLRenderTarget(SIM_RESOLUTION, SIM_RESOLUTION, compute.renderTextureParameters));
+  display.buffer.push(new THREE.WebGLRenderTarget(SIM_RESOLUTION, SIM_RESOLUTION, compute.renderTextureParameters));
+  display.renderTexture = display.buffer[0];
+  display.shaderParameters.background_texture.value = display.buffer[1];
+
+  clearBuffers(display.buffer);
+
   // DEBUG
   /*
   var geo = new THREE.PlaneBufferGeometry(1, 1, 1, 1);
@@ -258,6 +271,23 @@ function initDisplay(context) {
   display.mesh = new THREE.Mesh(geo, material);
   context.scene.add(display.mesh);
   */
+}
+
+function clearBuffers(buffers, clearColor) {
+  buffers.forEach(function(RTT) {
+    var previousClearColor = exp.context.renderer.getClearColor();
+    if (clearColor)
+      exp.context.renderer.setClearColor(clearColor);
+    exp.context.renderer.clearTarget(RTT, true);
+    if (clearColor)
+      exp.context.renderer.setClearColor(previousClearColor);
+  });
+}
+
+function swapBuffers(buffers) {
+  var tmp = buffers[1];
+  buffers[1] = buffers[0];
+  buffers[0] = tmp;
 }
 
 function createMesh() {
@@ -299,16 +329,13 @@ function initData() {
 
 function stepSim(renderer) {
   renderer.render( compute.scene, compute.camera, compute.renderTexture, true );
-
-  var tmp = compute.buffer[1];
-  compute.buffer[1] = compute.buffer[0];
-  compute.buffer[0] = tmp;
-  compute.shaderParameters.texture.value = compute.buffer[1];
-  display.shaderParameters.texture.value = compute.buffer[0];
+  swapBuffers(compute.buffer);
   compute.renderTexture = compute.buffer[0];
+  display.shaderParameters.data_texture.value = compute.buffer[0];
+  compute.shaderParameters.data_texture.value = compute.buffer[1];
 }
 
-function initCompute(width, height) {
+function initCompute() {
   // create data for sim, attach to shader input
   compute.initialTexture = initData();
 
@@ -316,7 +343,7 @@ function initCompute(width, height) {
   compute.buffer[1] = new THREE.WebGLRenderTarget(SIM_RESOLUTION, SIM_RESOLUTION, compute.renderTextureParameters);
   compute.renderTexture = compute.buffer[0];
 
-  compute.shaderParameters.texture.value = compute.initialTexture;
+  compute.shaderParameters.data_texture.value = compute.initialTexture;
   compute.initialTexture.needsUpdate = true;
 
   compute.renderTexture = compute.buffer[0];
@@ -341,5 +368,59 @@ function onMouseMove(event) {
     mouse.x = (event.offsetX / event.target.clientWidth) * 2 - 1;
     mouse.y =  1 - (event.offsetY / event.target.clientHeight) * 2;
 }
+
+/// Parameters
+
+var displayGroupParams = ShaderParameter.fromUniformHash(display.shaderParameters);
+var computeGroupParams = ShaderParameter.fromUniformHash(compute.shaderParameters);
+{
+  var speedParam = new Parameter("Speed", {type:'i', value:5, min:1, max:20});
+  computeGroupParams.push(speedParam);
+  computeGroupParams.push(new Trigger("New Layer", capture, 'space'));
+  computeGroupParams.push(new Trigger("Clear Current Layer", clearSimulation, 'c'));
+  computeGroupParams.push(new Trigger("Clear Canvas", clearCanvas, 'x'));
+}
+
+// Parameter groups
+var brushParams = [];
+{
+  displayGroupParams = displayGroupParams.filter(function(param) {
+    if (param.name.startsWith('brush'))
+      brushParams.push(param);
+    else return true;
+  });
+
+  computeGroupParams = computeGroupParams.filter(function(param) {
+    if (param.name.startsWith('brush'))
+      brushParams.push(param);
+    else return true;
+  });
+
+  brushParams.push(new Trigger('Flood Canvas', floodCanvas, 'f'));
+
+  brushParams.push(new Parameter("Axis of Symmetry", {
+    value: DEFAULT_SYMMETRY_MODE,
+    type: 'choice',
+    choices: [
+      SYMMETRY_MODES.NONE,
+      SYMMETRY_MODES.HORIZONTAL,
+      SYMMETRY_MODES.VERTICAL,
+      SYMMETRY_MODES.RADIAL_SYMMETRY
+    ],
+    onChange: function(newValue) {
+      compute.shaderParameters.symmetry_mode.value = newValue.value;
+      compute.shaderParameters.symmetry_mode.needsUpdate;
+    }
+  }));
+}
+
+var brushGroup = new ParameterGroup("Brush", {active: true, parameters: brushParams});
+exp.addParameter(brushGroup);
+
+var displayGroup = new ParameterGroup("Display", {active: true, parameters: displayGroupParams});
+exp.addParameter(displayGroup);
+
+var computeGroup = new ParameterGroup("Simulation", {active: true, parameters: computeGroupParams});
+exp.addParameter(computeGroup);
 
 module.exports = exp;
