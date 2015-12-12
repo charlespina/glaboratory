@@ -7,6 +7,7 @@ var THREE = require('../../lib/three');
 var DisplayFrag = require('./shaders/Display.frag');
 var ComputeFrag = require('./shaders/Compute.frag');
 var SharedVert = require('./shaders/Shared.vert');
+var TextureUtils = require('./TextureUtils');
 
 var exp = new Experiment("Reaction Diffusion");
 
@@ -163,29 +164,27 @@ var compute = {
 };
 
 function clearSimulation() {
-  clearBuffers(compute.buffer);
+  TextureUtils.clearBuffers(exp.context, compute.buffer);
 }
 
 function clearCanvas() {
-  clearBuffers(compute.buffer);
-  clearBuffers(display.buffer);
+  TextureUtils.clearBuffers(exp.context, compute.buffer);
+  TextureUtils.clearBuffers(exp.context, display.buffer);
 }
 
 function floodCanvas() {
-  clearBuffers(display.buffer, display.shaderParameters.brush_color.value);
+  TextureUtils.clearBuffers(exp.context, display.buffer, display.shaderParameters.brush_color.value);
 }
 
 function capture() {
   exp.context.renderer.render( exp.context.scene, compute.camera, display.renderTexture, true );
-  swapBuffers(display.buffer);
+  TextureUtils.swapBuffers(display.buffer);
   exp.context.renderer.render( exp.context.scene, compute.camera, display.renderTexture, true );
 
   display.renderTexture = display.buffer[0];
   display.shaderParameters.background_texture.value = display.buffer[1];
   clearSimulation();
 }
-
-
 
 exp.setup = function(context) {
   this.context = context;
@@ -262,7 +261,7 @@ function initDisplay(context) {
   display.renderTexture = display.buffer[0];
   display.shaderParameters.background_texture.value = display.buffer[1];
 
-  clearBuffers(display.buffer);
+  TextureUtils.clearBuffers(exp.context, display.buffer);
 
   // DEBUG
   /*
@@ -273,22 +272,7 @@ function initDisplay(context) {
   */
 }
 
-function clearBuffers(buffers, clearColor) {
-  buffers.forEach(function(RTT) {
-    var previousClearColor = exp.context.renderer.getClearColor();
-    if (clearColor)
-      exp.context.renderer.setClearColor(clearColor);
-    exp.context.renderer.clearTarget(RTT, true);
-    if (clearColor)
-      exp.context.renderer.setClearColor(previousClearColor);
-  });
-}
 
-function swapBuffers(buffers) {
-  var tmp = buffers[1];
-  buffers[1] = buffers[0];
-  buffers[0] = tmp;
-}
 
 function createMesh() {
   if (compute.mesh) {
@@ -329,7 +313,7 @@ function initData() {
 
 function stepSim(renderer) {
   renderer.render( compute.scene, compute.camera, compute.renderTexture, true );
-  swapBuffers(compute.buffer);
+  TextureUtils.swapBuffers(compute.buffer);
   compute.renderTexture = compute.buffer[0];
   display.shaderParameters.data_texture.value = compute.buffer[0];
   compute.shaderParameters.data_texture.value = compute.buffer[1];

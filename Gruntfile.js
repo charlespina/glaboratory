@@ -1,6 +1,7 @@
 module.exports = function(grunt) {
 
   require('load-grunt-tasks')(grunt);
+  var babelify = require('babelify');
 
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
@@ -16,16 +17,17 @@ module.exports = function(grunt) {
       }
     },
 
-    exec: {
-      serve: {
-        command: "node bin/web-server.js",
-        stdout: true
-      },
+    babel: {
     },
 
     browserify: {
       options: {
-        transform: [ require('stringify')(['.vert', '.frag']), require('grunt-react').browserify ]
+        transform: [ 
+          require('stringify')(['.vert', '.frag']), 
+          ["babelify", {
+            presets: ["es2015", "react"]
+          }],
+        ]
       },
       js: {
         src: 'src/app.js',
@@ -47,7 +49,6 @@ module.exports = function(grunt) {
         },
         files: {
           'public/css/main.min.css': 'src/css/main.sass',
-          'public/css/bs.min.css': 'src/css/bs.sass'
         }
       },
       prod: {
@@ -104,20 +105,6 @@ module.exports = function(grunt) {
       }
     },
 
-    useminPrepare: {
-      html: 'src/index.html',
-      options: { 
-        root: 'public',
-        dest: 'public',
-      }
-    },
-
-    uglify: {
-      options: {
-        sourceMap: false
-      }
-    },
-
     copy: {
       html: {
         src: 'src/index.html',
@@ -125,25 +112,7 @@ module.exports = function(grunt) {
       },
     },
 
-    usemin: {
-      html: 'public/index.html'
-    },
   });
   
-  grunt.registerTask('serve', ['exec:serve']);
   grunt.registerTask('default', ['connect', 'watch']);
-  grunt.registerTask('build', [ 
-    'concat:sass',  // produces temp src/css/mixamo.sass
-    'sass:prod',
-    'browserify',
-
-    'useminPrepare',
-      'concat:generated',
-      'uglify:generated',
-      'copy:html',
-    'usemin',
-
-    'exec:cleanup', // browserify leaves mixamo.js in public/js, and
-                    // we want to hide that from prying eyes
-  ]);
 };
