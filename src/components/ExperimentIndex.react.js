@@ -1,5 +1,5 @@
 var React = require('react');
-var ExperimentStore = require('../stores/ExperimentStore');
+import ExperimentStore from '../stores/ExperimentStore';
 var ReactRouter = require('react-router');
 var Link = ReactRouter.Link;
 
@@ -19,7 +19,6 @@ var ExperimentIndex = React.createClass({
     experimentList = <ul>{experimentList}</ul>;
     return (
       <div className="ui grid">
-        <h1>Hello?</h1>
         <div>
           {experimentList}
         </div>

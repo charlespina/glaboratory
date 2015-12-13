@@ -2,8 +2,8 @@ uniform sampler2D background_texture;
 uniform sampler2D data_texture;
 uniform vec3 layer_tint;
 uniform vec3 brush_color;
-uniform vec3 hilight_color;
 uniform int resolution;
+uniform vec3 highlight_color;
 uniform float highlight_strength;
 uniform float specular_power;
 
@@ -35,6 +35,6 @@ void main() {
     vec3 bg_color = texture2D(background_texture, v_uv).rgb;
     vec3 color = mix(bg_color*layer_tint, brush_color, getValue(v_uv));
 
-    vec3 spec = hilight_color * highlight_strength * pow(clamp(dot(calculateNormal(), normalize(vec3(1.0, 1.0, 1.2))), 0.0, 1.0), specular_power);
+    vec3 spec = highlight_color * highlight_strength * pow(clamp(dot(calculateNormal(), normalize(vec3(1.0, 1.0, 1.2))), 0.0, 1.0), specular_power);
     gl_FragColor = vec4(spec + color, 1.0);
 }

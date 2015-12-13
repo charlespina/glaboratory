@@ -2,6 +2,7 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var SliderInput = require('./SliderInput.react');
 var ColorPickerInput = require('./ColorPickerInput.react');
+import ExperimentStore from '../stores/ExperimentStore';
 var classnames = require('classnames');
 
 var GenericInput = React.createClass({
@@ -109,14 +110,46 @@ var GenericInput = React.createClass({
 });
 
 var Sidebar = React.createClass({
+  getState: function() {
+    if (ExperimentStore.currentExperiment) {
+      return {
+        parameters: ExperimentStore.currentExperiment.parameters
+      };
+    } else {
+      return {
+        parameters: []
+      }
+    }
+  },
+
+  updateState: function() {
+    this.setState(this.getState());
+  },
+
+  getInitialState: function() {
+    return this.getState();
+  },
+
+  componentDidMount: function() {
+    ExperimentStore.addChangeListener(this.updateState);
+  },
+
+  componentWillUnmount: function() {
+    ExperimentStore.removeChangeListener(this.updateState);
+  },
+
   coalesceGroups: function() {
+    if (!this.state.parameters)
+      return [];
+
     var coalesced = [];
     var container = null;
     var remap = {
       'group': 'accordion',
       'trigger': 'menu',
     };
-    this.props.parameters.forEach(function(param, i) {
+
+    this.state.parameters.forEach(function(param, i) {
       var remappedType = remap[param.type];
       if (remappedType !== undefined) {
         if (container === null || container.type != remappedType) {

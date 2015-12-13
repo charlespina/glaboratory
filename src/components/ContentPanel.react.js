@@ -1,20 +1,37 @@
 var React = require('react');
 var WebGLView = require('./WebGLView.react');
+import ExperimentStore from '../stores/ExperimentStore';
+var ExperimentActions = require('../actions/ExperimentActions');
 var keycode = require('keycode');
 
 var ContentPanel = React.createClass({
-  init: function(experiment) {
-    if (!experiment) return;
+  getState: function() {
+    return {
+      experiment: ExperimentStore.currentExperiment
+    }
+  },
 
+  updateState: function() {
+    if (this.state.experiment !== ExperimentStore.currentExperiment) {
+      this.init();
+      this.setState(this.getState());
+    }
+  },
+
+  getInitialState: function() {
+    return this.getState();
+  },
+
+  init: function() {
     var context = this.refs.view.getContext();
-    experiment.setup(context);
-    context.addListener('update', experiment.update.bind(experiment));
-    context.addListener('render', experiment.render.bind(experiment));
-    context.addListener('dispose', experiment.dispose.bind(experiment));
+    setTimeout(ExperimentActions.setupExperiment.bind(ExperimentActions, context));
   },
 
   onKeyPress: function(e) {
-    this.props.experiment.getFlattenedParameters().forEach(function(param) {
+    if (!this.state.experiment)
+      return;
+
+    this.state.experiment.getFlattenedParameters().forEach(function(param) {
       if (param.type == 'trigger' && param.hotKey == keycode(e.keyCode)) {
         param.fire();
       }
@@ -22,23 +39,25 @@ var ContentPanel = React.createClass({
   },
 
   componentDidMount: function() {
-    this.init(this.props.experiment);
+    ExperimentStore.addChangeListener(this.updateState);
     $(window).on('keydown', this.onKeyPress);
   },
 
   componentWillReceiveProps: function(props) {
     this.refs.view.reset();
-    this.init(props.experiment);
+    this.updateState();
   },
 
   componentWillUnmount: function() {
+    ExperimentStore.removeChangeListener(this.updateState);
     $(window).off('keydown', this.onKeyPress);
   },
 
   render: function() {
     var hotKeys;
-    if (this.props.experiment) {
-      hotKeys = this.props.experiment.getFlattenedParameters().filter(function(param) {
+    var experiment = this.state.experiment;
+    if (experiment) {
+      hotKeys = experiment.getFlattenedParameters().filter(function(param) {
         return (param.type == 'trigger' && param.hotKey !== undefined);
       }).map(function(param, i) {
         return (

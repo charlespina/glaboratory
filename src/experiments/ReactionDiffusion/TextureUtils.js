@@ -1,3 +1,5 @@
+var THREE = require('../../lib/three');
+
 function swapBuffers(buffers) {
   var tmp = buffers[1];
   buffers[1] = buffers[0];
@@ -15,7 +17,17 @@ function clearBuffers(context, buffers, clearColor) {
   });
 }
 
-module.exports = {
+export default {
   swapBuffers: swapBuffers,
-  clearBuffers: clearBuffers
+  clearBuffers: clearBuffers,
+  renderTextureSettings: {
+    minFilter: THREE.LinearFilter,
+    magFilter: THREE.LinearFilter,
+    wrapS: THREE.RenderTargetWrapping,
+    wrapT: THREE.RenderTargetWrapping,
+    format: THREE.RGBFormat,
+    stencilBuffer: false,
+    depthBuffer: false,
+    type: THREE.FloatType
+  }
 };

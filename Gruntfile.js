@@ -25,7 +25,8 @@ module.exports = function(grunt) {
         transform: [ 
           require('stringify')(['.vert', '.frag']), 
           ["babelify", {
-            presets: ["es2015", "react"]
+            presets: ["es2015", "react"],
+            // exclude: [/node_modules/, 'src/lib/three.js']
           }],
         ]
       },
