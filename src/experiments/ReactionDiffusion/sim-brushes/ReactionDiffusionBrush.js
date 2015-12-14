@@ -119,7 +119,6 @@ class ReactionDiffusionBrush extends SimBrush {
   }
 
   initParams() {
-    this.parameters = this.parameters.concat( ShaderParameter.fromUniformHash(this._uniforms) );
     this.parameters.push(
       new Parameter("Axis of Symmetry", {
         value: DEFAULT_SYMMETRY_MODE,
@@ -136,6 +135,7 @@ class ReactionDiffusionBrush extends SimBrush {
       })
     );
 
+    this.parameters = this.parameters.concat( ShaderParameter.fromUniformHash(this._uniforms) );
     this.speed = new Parameter("Speed", {type:'i', value:5, min:1, max:20});
     this.parameters.push(this.speed);
   }

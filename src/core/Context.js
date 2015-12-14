@@ -25,7 +25,7 @@ class Context extends EventEmitter {
 
   init() {
     var aspect = this.getWidth()/this.getHeight();
-    this.camera = new THREE.PerspectiveCamera(70, aspect, 1, 1000);
+    this.camera = new THREE.PerspectiveCamera(70, aspect, 0.1, 1000);
     this.camera.position.z = 400;
     this.scene = new THREE.Scene();
   }
