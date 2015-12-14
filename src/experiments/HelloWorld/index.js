@@ -1,5 +1,5 @@
-var Experiment = require('../../core/Experiment');
-var Parameter = require('../../core/Parameter');
+import Experiment from '../../core/Experiment';
+import Parameter from '../../core/Parameter';
 var THREE = require('../../lib/three');
 
 var helloWorld = new Experiment("Testing");

@@ -1,4 +1,4 @@
-var Experiment = require('../../core/Experiment');
+import Experiment from '../../core/Experiment';
 var THREE = require('../../lib/three');
 var simpleVert = require('./shaders/simple.vert');
 var cupFrag = require('./shaders/cup.frag');

@@ -1,7 +1,6 @@
-var ActionTypes = require('../actions/Actions').ActionTypes;
-var AppDispatcher = require('../dispatchers/AppDispatcher');
+import { ActionTypes } from '../actions/Actions';
+import AppDispatcher from '../dispatchers/AppDispatcher';
 var EventEmitter = require('events').EventEmitter;
-var assign = require('object-assign');
 
 class Store extends EventEmitter {
   constructor() {
@@ -30,12 +29,10 @@ class ExperimentStore extends Store {
       var action = payload.action;
       switch(action.type) {
         case ActionTypes.EXPERIMENT_SET:
-          console.log("setting experiment", action.data);
           this.setExperiment(action.data);
           this.emitChange();
           break;
         case ActionTypes.EXPERIMENT_SETUP:
-          console.log('setting up');
           this.setupExperiment(action.data);
           this.emitChange();
           break;
@@ -57,13 +54,21 @@ class ExperimentStore extends Store {
   }
 
   setupExperiment(context) {
-    console.log('settin it on up then myah');
+    if (!this.currentExperiment)
+      return;
+
+    if (this.currentExperiment.isSetup)
+      return;
+
     this.currentExperiment.setup(context);
 
     var exp = this.currentExperiment;
     context.addListener('update', exp.update.bind(exp));
     context.addListener('render', exp.render.bind(exp));
     context.addListener('dispose', exp.dispose.bind(exp));
+
+    this.currentExperiment.isSetup = true;
+
   }
 }
 

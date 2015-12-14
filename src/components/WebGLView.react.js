@@ -1,6 +1,6 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
-var Context = require('../core/Context');
+import Context from '../core/Context';
 var $ = require('jquery');
 
 var WebGLView = React.createClass({

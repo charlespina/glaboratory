@@ -1,7 +1,7 @@
 var React = require('react');
 var WebGLView = require('./WebGLView.react');
 import ExperimentStore from '../stores/ExperimentStore';
-var ExperimentActions = require('../actions/ExperimentActions');
+import ExperimentActions from '../actions/ExperimentActions';
 var keycode = require('keycode');
 
 var ContentPanel = React.createClass({
@@ -13,9 +13,9 @@ var ContentPanel = React.createClass({
 
   updateState: function() {
     if (this.state.experiment !== ExperimentStore.currentExperiment) {
-      this.init();
-      this.setState(this.getState());
+      if (ExperimentStore.currentExperiment) this.init();
     }
+    this.setState(this.getState());
   },
 
   getInitialState: function() {
@@ -90,7 +90,7 @@ var ContentPanel = React.createClass({
 
     return (
       <div className="twelve wide column content-panel">
-        <WebGLView ref="view" />
+        <WebGLView key="glview" ref="view" />
         {legend}
       </div>
     );

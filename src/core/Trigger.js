@@ -1,13 +1,14 @@
+class Trigger {
+  constructor(name, onFire, hotKey) {
+    this.name = name;
+    this.type = 'trigger';
+    this.onFire = onFire;
+    this.hotKey = hotKey;
+  }
 
-var Trigger = function(name, onFire, hotKey) {
-  this.name = name;
-  this.type = 'trigger';
-  this.onFire = onFire;
-  this.hotKey = hotKey;
-};
+  fire() {
+    if (this.onFire) this.onFire();
+  }
+}
 
-Trigger.prototype.fire = function() {
-  if (this.onFire) this.onFire();
-};
-
-module.exports = Trigger;
+export default Trigger;

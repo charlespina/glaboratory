@@ -1,22 +1,27 @@
 var Dispatcher = require('flux').Dispatcher;
 var assign = require('object-assign');
 
-var AppDispatcher = assign(new Dispatcher(), {
-  handleServerAction: function(action) {
+class AppDispatcher extends Dispatcher {
+  constructor() {
+    super();
+  }
+  
+  handleServerAction(action) {
     var payload = {
       source: "SERVER_ACTION",
       action: action
     };
     this.dispatch(payload);
-  },
+  }
 
-  handleViewAction: function(action) {
+  handleViewAction(action) {
     var payload = {
       source: "VIEW_ACTION",
       action: action
     };
     this.dispatch(payload);
   }
-});
+}
 
-module.exports = AppDispatcher;
+var singleton = new AppDispatcher();
+export default singleton;

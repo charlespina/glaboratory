@@ -1,14 +1,14 @@
-var Experiment = require('../../core/Experiment');
-var ShaderParameter = require('../../core/ShaderParameter');
-var Trigger = require('../../core/Trigger');
-var Parameter = require('../../core/Parameter');
-var ParameterGroup = require('../../core/ParameterGroup');
+import Experiment from '../../core/Experiment';
+import ShaderParameter from '../../core/ShaderParameter';
+import Trigger from '../../core/Trigger';
+import Parameter from '../../core/Parameter';
+import ParameterGroup from '../../core/ParameterGroup';
+import TextureUtils from './TextureUtils';
+import ReactionDiffusionBrush from './sim-brushes/ReactionDiffusionBrush';
 var THREE = require('../../lib/three');
 var DisplayFrag = require('./shaders/Display.frag');
 var ComputeFrag = require('./shaders/Compute.frag');
 var SharedVert = require('./shaders/Shared.vert');
-import TextureUtils from './TextureUtils';
-import ReactionDiffusionBrush from './sim-brushes/ReactionDiffusionBrush';
 
 var exp = new Experiment("Reaction Diffusion");
 
@@ -173,6 +173,8 @@ function onMouseMove(event) {
 
 /// Parameters
 function setupParameters() {
+  console.log("Setting up parameters");
+  exp.clearParameters();
   var displayGroupParams = ShaderParameter.fromUniformHash(display.shaderParameters);
 
   // Parameter groups
@@ -184,7 +186,7 @@ function setupParameters() {
       else return true;
     });
 
-    brushParams.concat(exp.brush.parameters);
+    brushParams = brushParams.concat(exp.brush.parameters);
     brushParams.push(new Trigger("New Layer", capture, 'space'));
     brushParams.push(new Trigger("Clear Current Layer", clearSimulation, 'c'));
     brushParams.push(new Trigger("Clear Canvas", clearCanvas, 'x'));

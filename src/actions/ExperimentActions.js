@@ -1,4 +1,4 @@
-var Actions = require('./Actions');
+import { registerViewActions } from './Actions';
 
 var viewActions = {
   setExperiment: "EXPERIMENT_SET",
@@ -6,6 +6,6 @@ var viewActions = {
 };
 
 var actions = {};
-Actions.registerViewActions(actions, viewActions);
+registerViewActions(actions, viewActions);
 
-module.exports = actions;
+export default actions;

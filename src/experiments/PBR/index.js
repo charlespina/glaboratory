@@ -1,6 +1,6 @@
-var Experiment = require('../../core/Experiment');
-var ShaderParameter = require('../../core/ShaderParameter');
-var Parameter = require('../../core/Parameter');
+import Experiment from '../../core/Experiment';
+import ShaderParameter from '../../core/ShaderParameter';
+import Parameter from '../../core/Parameter';
 var OBJLoader = require('../../lib/OBJLoader');
 var THREE = require('../../lib/three');
 var vertShader = require('./shaders/pbr.vert');
@@ -14,7 +14,7 @@ var uniforms = {
   },
   "normal_map": {
     type: 't',
-    value: null, 
+    value: null,
   },
   "use_textures": {
     type: 'i',
@@ -45,7 +45,7 @@ var uniforms = {
   },
   "roughness_map": {
     type: 't',
-    value: null, 
+    value: null,
   },
   "metalicity": {
     type: 'f',
@@ -61,7 +61,7 @@ var uniforms = {
   },
   "base_color_map": {
     type: 't',
-    value: null, 
+    value: null,
   },
   "base_color_constant": {
     type: 'c',
@@ -92,7 +92,7 @@ exp.setup = function(context) {
   uniforms.normal_map.value = THREE.ImageUtils.loadTexture("textures/fuse_char_Normal.png")
   uniforms.base_color_map.value = THREE.ImageUtils.loadTexture("textures/fuse_char_BaseColor.png")
   uniforms.roughness_map.value = THREE.ImageUtils.loadTexture("textures/fuse_char_Roughness.png")
-  
+
   var material = new THREE.ShaderMaterial({
     uniforms: uniforms,
     vertexShader: vertShader,

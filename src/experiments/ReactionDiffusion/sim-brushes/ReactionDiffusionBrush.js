@@ -119,7 +119,7 @@ class ReactionDiffusionBrush extends SimBrush {
   }
 
   initParams() {
-    this.parameters.concat( ShaderParameter.fromUniformHash(this._uniforms) );
+    this.parameters = this.parameters.concat( ShaderParameter.fromUniformHash(this._uniforms) );
     this.parameters.push(
       new Parameter("Axis of Symmetry", {
         value: DEFAULT_SYMMETRY_MODE,
@@ -146,10 +146,11 @@ class ReactionDiffusionBrush extends SimBrush {
       // KS says dt = 1.0 works well. may want to scale up actual dt
       this.setUniform(this._uniforms.delta_time, 1.0);
       this.context.renderer.render(this.scene, this.camera, this.output, true);
+
       TextureUtils.swapBuffers(this.buffer);
+      this.output = this.buffer[0];
+      this.setUniform(this._uniforms.data_texture, this.buffer[1]);
     }
-    this.output = this.buffer[0];
-    this.setUniform(this._uniforms.data_texture, this.buffer[1]);
   }
 
   draw(pos) {

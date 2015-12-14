@@ -1,6 +1,6 @@
-var AppDispatcher = require('../dispatchers/AppDispatcher');
+import AppDispatcher from '../dispatchers/AppDispatcher';
 
-function register(context, methodName, actionType, isServerAction) {
+export function register(context, methodName, actionType, isServerAction) {
   var dispatchMethod;
 
   if (isServerAction)
@@ -16,23 +16,20 @@ function register(context, methodName, actionType, isServerAction) {
   };
 }
 
-var _ = {
-  types: {}
-};
+var ActionTypes = {};
 
-module.exports = {
-  register: register,
-  registerServerActions: function(context, actions) {
-    Object.keys(actions).forEach(function(methodName) {
-      _.types[actions[methodName]] = actions[methodName];
-      register(context, methodName, actions[methodName], true);
-    });
-  },
-  registerViewActions: function(context, actions) {
-    Object.keys(actions).forEach(function(methodName) {
-      _.types[actions[methodName]] = actions[methodName];
-      register(context, methodName, actions[methodName], false);
-    });
-  },
-  ActionTypes: _.types
-};
+export function registerServerAction(context, actions) {
+  Object.keys(actions).forEach(function(methodName) {
+    ActionTypes[actions[methodName]] = actions[methodName];
+    register(context, methodName, actions[methodName], true);
+  });
+}
+
+export function registerViewActions(context, actions) {
+  Object.keys(actions).forEach(function(methodName) {
+    ActionTypes[actions[methodName]] = actions[methodName];
+    register(context, methodName, actions[methodName], false);
+  });
+}
+
+export { ActionTypes };
