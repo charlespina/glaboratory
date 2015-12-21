@@ -13,7 +13,6 @@ uniform vec2 axis_of_symmetry;
 uniform float brush_width;
 uniform float brush_softness;
 
-varying vec3 v_normal;
 varying vec2 v_uv;
 
 

@@ -7,7 +7,6 @@ uniform vec3 highlight_color;
 uniform float highlight_strength;
 uniform float specular_power;
 
-varying vec3 v_normal;
 varying vec2 v_uv;
 
 // samples around a 3x3 grid with x,y being grid coordinates, at a step of step

@@ -1,4 +1,3 @@
-varying vec3 v_normal;
 varying vec2 v_uv;
 
 void main() {

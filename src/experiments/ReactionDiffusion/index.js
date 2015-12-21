@@ -7,7 +7,6 @@ import TextureUtils from './TextureUtils';
 import ReactionDiffusionBrush from './sim-brushes/ReactionDiffusionBrush';
 var THREE = require('../../lib/three');
 var DisplayFrag = require('./shaders/Display.frag');
-var ComputeFrag = require('./shaders/Compute.frag');
 var SharedVert = require('./shaders/Shared.vert');
 
 var exp = new Experiment("Reaction Diffusion");

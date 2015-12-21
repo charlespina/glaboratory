@@ -5,22 +5,13 @@ import Parameter from '../../../core/Parameter';
 
 var THREE = require('../../../lib/three');
 
-const ComputeFrag = require('../shaders/ReactionDiffusion.frag');
+const ComputeFrag = require('../shaders/Fluid.frag');
 const SharedVert = require('../shaders/Shared.vert')
 
-const SYMMETRY_MODES = {
-  NONE: {name:'No Symmetry', value:0},
-  HORIZONTAL: {name:'Horizontal Symmetry', value:1},
-  VERTICAL: {name:'Vertical Symmetry', value:2},
-  RADIAL_SYMMETRY: {name:'Radial Symmetry', value: 3},
-};
-
-const DEFAULT_SYMMETRY_MODE=SYMMETRY_MODES.RADIAL_SYMMETRY;
-
-class ReactionDiffusionBrush extends SimBrush {
+class FluidBrush extends SimBrush {
   constructor() {
     super();
-    this.name = 'Reaction Diffusion Brush';
+    this.name = 'Fluid Brush';
   }
 
   get uniforms() : object {
@@ -163,4 +154,4 @@ class ReactionDiffusionBrush extends SimBrush {
   }
 }
 
-export default ReactionDiffusionBrush;
+export default FluidBrush;
