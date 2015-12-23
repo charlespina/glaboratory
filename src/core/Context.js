@@ -62,7 +62,7 @@ class Context extends EventEmitter {
       return;
 
     var now = new Date();
-    this.emit('update', (now - this.time), this);
+    this.emit('update', (now - this.time)/1000.0, this);
 
     if (!this.emit('render', this))
       this.renderDefaultCamera();

@@ -4,7 +4,9 @@ import Trigger from '../../core/Trigger';
 import Parameter from '../../core/Parameter';
 import ParameterGroup from '../../core/ParameterGroup';
 import TextureUtils from './TextureUtils';
+import BrushTip from './sim-brushes/BrushTip';
 import ReactionDiffusionBrush from './sim-brushes/ReactionDiffusionBrush';
+import PaintBrush from './sim-brushes/PaintBrush';
 var THREE = require('../../lib/three');
 var DisplayFrag = require('./shaders/Display.frag');
 var SharedVert = require('./shaders/Shared.vert');
@@ -12,6 +14,7 @@ var SharedVert = require('./shaders/Shared.vert');
 var exp = new Experiment("Reaction Diffusion");
 
 var SIM_RESOLUTION = 512;
+var IMAGE_RESOLUTION = 1024;
 
 var mouse = { pressed: false, x: 1, y: 1 };
 var vector = new THREE.Vector3();
@@ -30,6 +33,15 @@ var display = {
     "data_texture": {
       type: 't',
       value: null
+    },
+    "brush_texture": {
+      type: 't',
+      value: null
+    },
+    "show_brush_preview": {
+      type: 'i',
+      value: 1,
+      hidden: true
     },
     "layer_tint": {
       type: 'c',
@@ -76,7 +88,13 @@ function floodCanvas() {
   TextureUtils.clearBuffers(exp.context, display.buffer, display.shaderParameters.brush_color.value);
 }
 
+function showBrushPreview(val) {
+  display.shaderParameters.show_brush_preview.value = val ? 1 : 0;
+  display.shaderParameters.show_brush_preview.needsUpdate = true;
+}
+
 function capture() {
+  showBrushPreview(false);
   exp.context.renderer.render( exp.context.scene, exp.brush.camera, display.renderTexture, true );
   TextureUtils.swapBuffers(display.buffer);
   display.renderTexture = display.buffer[0];
@@ -86,8 +104,10 @@ function capture() {
 
 exp.setup = function(context) {
   this.context = context;
-  this.brush = new ReactionDiffusionBrush();
-  this.brush.init(context, SIM_RESOLUTION);
+  this.brush = new ReactionDiffusionBrush(context, SIM_RESOLUTION);
+  // this.brush = new PaintBrush(context, SIM_RESOLUTION);
+  this.brushTip = new BrushTip(context, SIM_RESOLUTION);
+  this.brush.connectBrushTip(this.brushTip);
 
   setupParameters();
 
@@ -101,6 +121,8 @@ exp.setup = function(context) {
 
 exp.dispose = function(context) {
   this.context = null;
+  this.brushTip.dispose();
+  this.brushTip = null;
   this.brush.dispose();
   this.brush = null;
 };
@@ -112,13 +134,23 @@ exp.update = function(dt) {
   var intersection = intersections.length > 0 && intersections[0];
 
   if (intersection) {
+    this.brushTip.isDrawing = mouse.pressed
+    this.brushTip.draw(intersection.point);
+
     this.brush.isDrawing = mouse.pressed;
-    this.brush.draw(intersection.point)
+    this.brush.draw(intersection.point);
+
+    showBrushPreview(false);
   }
 
-  if (!mouse.pressed)
+  if (!mouse.pressed) {
+    this.brushTip.isDrawing = mouse.pressed;
     this.brush.isDrawing = mouse.pressed;
 
+    showBrushPreview(true);
+  }
+
+  this.brushTip.update(dt);
   this.brush.update(dt);
   display.shaderParameters.data_texture.value = exp.brush.output;
 };
@@ -136,6 +168,9 @@ function initDisplay(context) {
   display.shaderParameters.data_texture.value = exp.brush.output;
   display.shaderParameters.data_texture.needsUpdate = true;
 
+  display.shaderParameters.brush_texture.value = exp.brushTip.output;
+  display.shaderParameters.brush_texture.needsUpdate = true;
+
   display.material = new THREE.MeshBasicMaterial({color:0xFF0000});
   display.material = new THREE.ShaderMaterial({
     uniforms: display.shaderParameters,
@@ -146,8 +181,8 @@ function initDisplay(context) {
   display.mesh = new THREE.Mesh(geo, display.material);
   context.scene.add(display.mesh);
 
-  display.buffer.push(new THREE.WebGLRenderTarget(SIM_RESOLUTION, SIM_RESOLUTION, TextureUtils.renderTextureSettings));
-  display.buffer.push(new THREE.WebGLRenderTarget(SIM_RESOLUTION, SIM_RESOLUTION, TextureUtils.renderTextureSettings));
+  display.buffer.push(new THREE.WebGLRenderTarget(IMAGE_RESOLUTION, IMAGE_RESOLUTION, TextureUtils.renderTextureSettings));
+  display.buffer.push(new THREE.WebGLRenderTarget(IMAGE_RESOLUTION, IMAGE_RESOLUTION, TextureUtils.renderTextureSettings));
   display.renderTexture = display.buffer[0];
   display.shaderParameters.background_texture.value = display.buffer[1];
 
@@ -185,6 +220,7 @@ function setupParameters() {
       else return true;
     });
 
+    brushParams = brushParams.concat(exp.brushTip.parameters);
     brushParams = brushParams.concat(exp.brush.parameters);
     brushParams.push(new Trigger("New Layer", capture, 'space'));
     brushParams.push(new Trigger("Clear Current Layer", clearSimulation, 'c'));

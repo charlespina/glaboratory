@@ -8,19 +8,14 @@ var THREE = require('../../../lib/three');
 const ComputeFrag = require('../shaders/ReactionDiffusion.frag');
 const SharedVert = require('../shaders/Shared.vert')
 
-const SYMMETRY_MODES = {
-  NONE: {name:'No Symmetry', value:0},
-  HORIZONTAL: {name:'Horizontal Symmetry', value:1},
-  VERTICAL: {name:'Vertical Symmetry', value:2},
-  RADIAL_SYMMETRY: {name:'Radial Symmetry', value: 3},
-};
-
-const DEFAULT_SYMMETRY_MODE=SYMMETRY_MODES.RADIAL_SYMMETRY;
-
-class ReactionDiffusionBrush extends SimBrush {
-  constructor() {
-    super();
+export default class ReactionDiffusionBrush extends SimBrush {
+  constructor(context, resolution) {
+    super(context, resolution, 2, false);
     this.name = 'Reaction Diffusion Brush';
+
+    // assign data texture to appropriate uniform
+    this.setUniform(this._uniforms.data_texture, this.buffer[1]);
+    this.initParams();
   }
 
   get uniforms() : object {
@@ -35,8 +30,21 @@ class ReactionDiffusionBrush extends SimBrush {
     return ComputeFrag;
   }
 
+  connectBrushTip(brushTip) {
+    this.setUniform(this._uniforms.brush_texture, brushTip.output);
+  }
+
   initUniforms() {
     this._uniforms = {
+      "brush_active": {
+        type: 'i',
+        value: 0,
+        hidden: true,
+      },
+      "brush_texture": {
+        type: 't',
+        value: null
+      },
       "time": {
         type: 'f',
         value: 0.0,
@@ -50,28 +58,6 @@ class ReactionDiffusionBrush extends SimBrush {
       "resolution": {
         type: 'i',
         value: this.resolution,
-        hidden: true
-      },
-      "brush_softness": {
-        type: 'f',
-        value: 0.0,
-        min: 0.0,
-        max: 1.0
-      },
-      "brush_width": {
-        type: 'f',
-        value: 10.0,
-        min: 1.0,
-        max: this.resolution/5.0
-      },
-      "brush_position": {
-        type: 'v2',
-        value: new THREE.Vector2(),
-        hidden: true
-      },
-      "brush_active": {
-        type: 'i',
-        value: false,
         hidden: true
       },
       "A_diffuse": {
@@ -98,11 +84,7 @@ class ReactionDiffusionBrush extends SimBrush {
         max: 0.1,
         value: 0.062
       },
-      "symmetry_mode": {
-        type: 'i',
-        value: DEFAULT_SYMMETRY_MODE.value,
-        hidden: true
-      },
+
       "data_texture": {
         type: 't',
         value: null
@@ -110,37 +92,16 @@ class ReactionDiffusionBrush extends SimBrush {
     };
   }
 
-  init(context, resolution) {
-    super.init(context, resolution);
-
-    // assign data texture to appropriate uniform
-    this.setUniform(this._uniforms.data_texture, this.buffer[1]);
-    this.initParams();
-  }
-
   initParams() {
-    this.parameters.push(
-      new Parameter("Axis of Symmetry", {
-        value: DEFAULT_SYMMETRY_MODE,
-        type: 'choice',
-        choices: [
-          SYMMETRY_MODES.NONE,
-          SYMMETRY_MODES.HORIZONTAL,
-          SYMMETRY_MODES.VERTICAL,
-          SYMMETRY_MODES.RADIAL_SYMMETRY
-        ],
-        onChange: (newValue) => {
-          this.setUniform(this._uniforms.symmetry_mode, newValue.value);
-        }
-      })
-    );
-
+    this.parameters = [];
     this.parameters = this.parameters.concat( ShaderParameter.fromUniformHash(this._uniforms) );
     this.speed = new Parameter("Speed", {type:'i', value:5, min:1, max:20});
     this.parameters.push(this.speed);
   }
 
   update(dt) {
+    // draw brush position
+
     for(let i=0; i<this.speed.value; i++) {
       this.setUniform(this._uniforms.time, this._uniforms.time.value + 0.01);
       // KS says dt = 1.0 works well. may want to scale up actual dt
@@ -154,7 +115,7 @@ class ReactionDiffusionBrush extends SimBrush {
   }
 
   draw(pos) {
-    this.setUniform(this._uniforms.brush_position, pos);
+    // nothing
   }
 
   set isDrawing(val) {
@@ -162,5 +123,3 @@ class ReactionDiffusionBrush extends SimBrush {
     this.setUniform(this._uniforms.brush_active, val);
   }
 }
-
-export default ReactionDiffusionBrush;

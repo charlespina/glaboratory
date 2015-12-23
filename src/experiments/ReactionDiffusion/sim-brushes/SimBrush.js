@@ -2,9 +2,9 @@ var THREE = require('../../../lib/three');
 import TextureUtils from '../TextureUtils';
 
 class SimBrush {
-  constructor() {
-    this.resolution = null;
-    this.context;
+  constructor(context, resolution) {
+    this.resolution = resolution;
+    this.context = context;
     this.data;
     this.dataTexture;
     this.scene;
@@ -14,6 +14,7 @@ class SimBrush {
     this._isDrawing = false;
     this.parameters = [];
     this.buffer = [];
+    this.init(context, resolution);
   }
 
   get isDrawing() {
@@ -42,23 +43,24 @@ class SimBrush {
       this.resolution, this.resolution, THREE.RGBFormat, THREE.FloatType);
   }
 
-  init(context, resolution) {
-    this.resolution = resolution;
-    this.context = context;
-    this.buffer = [
-      new THREE.WebGLRenderTarget(this.resolution, this.resolution,
-        TextureUtils.renderTextureSettings),
-      new THREE.WebGLRenderTarget(this.resolution, this.resolution,
-        TextureUtils.renderTextureSettings)
-    ];
-    this.initData();
+  init(context, resolution, numBuffers = 2, needsInputData = false) {
+    this.buffer = [];
+    for (let i=0; i<numBuffers; i++) {
+      this.buffer[i] = new THREE.WebGLRenderTarget(this.resolution, this.resolution,
+        TextureUtils.renderTextureSettings);
+    }
+
+    if (needsInputData)
+      this.initData();
     this.initUniforms();
 
     this.material = new THREE.ShaderMaterial({
       uniforms: this.uniforms,
       vertexShader: this.vertexShader,
-      fragmentShader: this.fragmentShader
+      fragmentShader: this.fragmentShader,
     });
+
+    this.material.derivitives = true;
 
     const geometry = new THREE.PlaneBufferGeometry(1, 1, 1, 1);
     geometry.computeTangents();

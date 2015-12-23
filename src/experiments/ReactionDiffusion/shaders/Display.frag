@@ -1,3 +1,5 @@
+#extension GL_OES_standard_derivatives : enable
+
 uniform sampler2D background_texture;
 uniform sampler2D data_texture;
 uniform vec3 layer_tint;
@@ -6,8 +8,12 @@ uniform int resolution;
 uniform vec3 highlight_color;
 uniform float highlight_strength;
 uniform float specular_power;
+uniform int show_brush_preview;
+uniform sampler2D brush_texture;
 
 varying vec2 v_uv;
+
+float iso_threshold = 0.03;
 
 // samples around a 3x3 grid with x,y being grid coordinates, at a step of step
 vec3 sample(float step, float x, float y) {
@@ -30,10 +36,38 @@ vec3 calculateNormal() {
     return normalize(vec3(dx, dy, getValue(v_uv) - 0.5));
 }
 
+float brushValue( vec2 uv ) {
+    return (texture2D(brush_texture, uv).r - iso_threshold);
+}
+
+vec2 gradient( vec2 x ) {
+    float epsilon = 2.0/float(resolution);
+    vec2 h = vec2( epsilon, 0.0 );
+    return vec2( brushValue(x+h.xy) - brushValue(x-h.xy),
+                 brushValue(x+h.yx) - brushValue(x-h.yx) )/(2.0*h.x);
+}
+
+float brushPreview( vec2 x ) {
+    float v = brushValue( x );
+    vec2  g = gradient( x );
+    float de = abs(v)/length(g);
+    return max(0.0, 1.0 - smoothstep( 0.0, 0.002, de ));
+}
+
 void main() {
+
     vec3 bg_color = texture2D(background_texture, v_uv).rgb;
     vec3 color = mix(bg_color*layer_tint, brush_color, getValue(v_uv));
-
     vec3 spec = highlight_color * highlight_strength * pow(clamp(dot(calculateNormal(), normalize(vec3(1.0, 1.0, 1.2))), 0.0, 1.0), specular_power);
-    gl_FragColor = vec4(spec + color, 1.0);
+
+    vec3 image = spec + color;
+
+    float brush_alpha = 0.0;
+    if (show_brush_preview == 1) {
+      float brush_preview = brushPreview(v_uv);
+      brush_alpha = 1.0 * brush_preview;
+    }
+
+    vec3 display = mix(image, vec3(1.0), brush_alpha);
+    gl_FragColor = vec4(display, 1.0);
 }
