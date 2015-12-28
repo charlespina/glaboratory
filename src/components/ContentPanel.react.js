@@ -44,7 +44,7 @@ var ContentPanel = React.createClass({
   },
 
   componentWillReceiveProps: function(props) {
-    this.refs.view.reset();
+    // this.refs.view.reset();
     this.updateState();
   },
 

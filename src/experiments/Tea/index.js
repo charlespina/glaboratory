@@ -1,4 +1,5 @@
 import Experiment from '../../core/Experiment';
+import Trigger from '../../core/Trigger';
 var THREE = require('../../lib/three');
 var simpleVert = require('./shaders/simple.vert');
 var cupFrag = require('./shaders/cup.frag');
@@ -24,16 +25,6 @@ Number.prototype.lerp = function(low, high) {
 // spoon
 // ice cubes
 var mouseX = null, mouseY = null;
-
-function handleKeyboardInput(e) {
-    switch(e.keyCode) {
-        case 114:
-            exp.initData();
-            break;
-        default:
-            break;
-    }
-}
 
 function onMouseMove(event) {
     var bbox = event.target.getBoundingClientRect();
@@ -93,9 +84,9 @@ exp.setup = function(context) {
   this.imageData = new Float32Array(N*N*3);
 
   this.scene = context.scene;
-  this.camera = new THREE.PerspectiveCamera(30, context.getWidth() / context.getHeight(), 1, 10);
-  this.camera.position.z = 2;
   this.context = context;
+  this.context.camera = new THREE.PerspectiveCamera(30, context.getWidth() / context.getHeight(), 1, 10);
+  this.context.camera.position.z = 2;
 
   // compute setup
   this.cameraRTT = new THREE.OrthographicCamera(-0.5, 0.5, 0.5, -0.5, 1, 10);
@@ -205,16 +196,17 @@ exp.setup = function(context) {
 
   this.initData();
 
+  this.addParameter(new Trigger("Reset Simulation", ()=>this.initData(), 'r'));
+
   // Events
   // TODO: figure out mouse/keyboard events for Experiments
   document.addEventListener('mousemove', onMouseMove, false);
-  document.addEventListener('keypress', handleKeyboardInput);
 };
 
 exp.render = function() {
   this.context.renderer.clear();
   this.context.renderer.render(this.sceneRTT, this.cameraRTT, this.renderTexture, true);
-  this.context.renderer.render(this.scene, this.camera);
+  this.context.renderer.render(this.scene, this.context.camera);
 };
 
 exp.update = function(dt) {
