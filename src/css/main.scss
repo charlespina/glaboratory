@@ -2,13 +2,8 @@ html {
   font-size: 12px;
 }
 
-#site {
+body {
   background-color: black;
-  height: 100vh;
-  overflow: hidden;
-  .row {
-    height: calc(100% - 50px);
-  }
 }
 
 .color-picker-input, .slider-input {
@@ -162,6 +157,7 @@ html {
   display: flex;
   flex-flow: column;
   height: 100vh;
+  overflow: hidden;
 }
 
 .topbar {
@@ -199,8 +195,6 @@ html {
 }
 
 .content-panel {
-  padding-right: 0;
-  padding-left: 0;
   height: calc(100% - 38px);
   overflow: auto;
 }

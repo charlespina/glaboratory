@@ -7,6 +7,7 @@ var assign = require('object-assign');
 // scene-setup - called once when the context is first initialized
 // update(delta_time, context) - called once per frame, with time since last update, and context
 // render(context) - called once per frame
+// resize(context) - called on resize
 // dispose - called when the context is about to be destroyed
 
 class Context extends EventEmitter {
@@ -51,6 +52,7 @@ class Context extends EventEmitter {
     this.renderer.setSize(this.getWidth(), this.getHeight());
     this.camera.aspect = this.getWidth()/this.getHeight();
     this.camera.updateProjectionMatrix();
+    this.emit('resize', this);
   }
 
   renderDefaultCamera() {

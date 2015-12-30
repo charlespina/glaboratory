@@ -37,52 +37,59 @@ var uniforms = {
   },
 };
 
-var exp = new Experiment("Environment Blur");
+class EnvironmentBlur extends Experiment {
+  constructor() {
+    super("Environment Blur");
+    this.thumbnail = "images/env-blur.png";
+    this.description = "Convolution of a scene based on roughness, for use with PBR systems."
+    this.addParameters(ShaderParameter.fromUniformHash(uniforms));
+    this.parameters.forEach((param)=> {
+      param.onChange = (v)=> this.onParameterChange(v);
+    });
+  }
 
-exp.onParameterChange = function(value) {
-  this.dirty = true;
+  onParameterChange(value) {
+    this.dirty = true;
+  }
+
+  setup(context) {
+    uniforms.vdc_map.value = new THREE.DataTexture(createVanDerCorputSequenceData(N), N, 1, THREE.LuminanceFormat, THREE.FloatType);
+    uniforms.vdc_map.value.needsUpdate = true;
+    uniforms.reflection_map.value = THREE.ImageUtils.loadTexture("textures/reflection.png", THREE.UVMapping, ()=> {
+      this.dirty = true;
+    });
+    // THREE.ImageUtils.loadTexture("textures/reflection2.gif");
+
+    var material = new THREE.ShaderMaterial({
+      uniforms: uniforms,
+      vertexShader: vertShader,
+      fragmentShader: fragShader
+    });
+
+    var geo = new THREE.SphereGeometry(100, 64, 46);
+    geo.computeTangents();
+
+    context.camera.position.z = 200;
+
+    this.mesh = new THREE.Mesh(geo, material);
+    context.scene.add(this.mesh);
+
+    this.dirty = true;
+  };
+
+  resize(context) {
+    this.dirty = true;
+  }
+
+  update(dt) {
+  }
+
+  render(context) {
+    if (this.dirty) {
+      context.renderDefaultCamera();
+      this.dirty = false;
+    }
+  }
 }
 
-exp.addParameters(ShaderParameter.fromUniformHash(uniforms));
-exp.parameters.forEach(function(param) {
-  console.log("testing");
-  param.onChange = this.onParameterChange.bind(this);
-}.bind(exp));
-
-exp.setup = function(context) {
-  uniforms.vdc_map.value = new THREE.DataTexture(createVanDerCorputSequenceData(N), N, 1, THREE.LuminanceFormat, THREE.FloatType);
-  uniforms.vdc_map.value.needsUpdate = true;
-  uniforms.reflection_map.value = THREE.ImageUtils.loadTexture("textures/reflection.png");
-  // THREE.ImageUtils.loadTexture("textures/reflection2.gif");
-
-  var material = new THREE.ShaderMaterial({
-    uniforms: uniforms,
-    vertexShader: vertShader,
-    fragmentShader: fragShader
-  });
-
-  var geo = new THREE.SphereGeometry(100, 64, 46);
-  geo.computeTangents();
-
-  context.camera.position.z = 200;
-
-  this.mesh = new THREE.Mesh(geo, material);
-  context.scene.add(this.mesh);
-
-  this.dirty = true;
-};
-
-exp.update = function(dt) {
-};
-
-exp.render = function(context) {
-  if (this.dirty) {
-    context.renderDefaultCamera();
-    this.dirty = false;
-  }
-};
-
-exp.thumbnail = "images/env-blur.png";
-exp.description = "Convolution of a scene based on roughness, for use with PBR systems."
-
-module.exports = exp;
+module.exports = new EnvironmentBlur();

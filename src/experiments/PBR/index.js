@@ -84,35 +84,37 @@ var uniforms = {
   },
 };
 
-var exp = new Experiment("Physically Based Rendering");
+class PBR extends Experiment {
+  constructor() {
+    super("Physically Based Rendering");
+    this.thumbnail = "images/pbr.png";
+    this.description = "Physically based rendering implementation.";
+    this.addParameters(ShaderParameter.fromUniformHash(uniforms));
+  }
 
-exp.addParameters(ShaderParameter.fromUniformHash(uniforms));
+  setup(context) {
+    uniforms.normal_map.value = THREE.ImageUtils.loadTexture("textures/fuse_char_Normal.png")
+    uniforms.base_color_map.value = THREE.ImageUtils.loadTexture("textures/fuse_char_BaseColor.png")
+    uniforms.roughness_map.value = THREE.ImageUtils.loadTexture("textures/fuse_char_Roughness.png")
 
-exp.setup = function(context) {
-  uniforms.normal_map.value = THREE.ImageUtils.loadTexture("textures/fuse_char_Normal.png")
-  uniforms.base_color_map.value = THREE.ImageUtils.loadTexture("textures/fuse_char_BaseColor.png")
-  uniforms.roughness_map.value = THREE.ImageUtils.loadTexture("textures/fuse_char_Roughness.png")
+    var material = new THREE.ShaderMaterial({
+      uniforms: uniforms,
+      vertexShader: vertShader,
+      fragmentShader: fragShader
+    });
 
-  var material = new THREE.ShaderMaterial({
-    uniforms: uniforms,
-    vertexShader: vertShader,
-    fragmentShader: fragShader
-  });
+    var geo = new THREE.SphereGeometry(100, 64, 46);
+    geo.computeTangents();
 
-  var geo = new THREE.SphereGeometry(100, 64, 46);
-  geo.computeTangents();
+    context.camera.position.z = 200;
 
-  context.camera.position.z = 200;
+    this.mesh = new THREE.Mesh(geo, material);
+    context.scene.add(this.mesh);
+  }
 
-  this.mesh = new THREE.Mesh(geo, material);
-  context.scene.add(this.mesh);
-};
+  update(dt) {
+    this.mesh.rotation.y += 0.010;
+  }
+}
 
-exp.update = function(dt) {
-  this.mesh.rotation.y += 0.010;
-};
-
-exp.thumbnail = "images/pbr.png";
-exp.description = "Physically based rendering implementation.";
-
-module.exports = exp;
+module.exports = new PBR();

@@ -77,6 +77,10 @@ class SimBrush {
   dispose() {
     // break cycle
     this.context = null;
+    this.buffer.forEach(function(buffer) {
+      buffer.dispose();
+    });
+    this.buffer = [];
   }
 
   // sim

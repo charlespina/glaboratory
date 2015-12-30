@@ -10,6 +10,10 @@ class Experiment {
     this.parameters = [];
   }
 
+  resize(context) {
+    // TO BE OVERWRITTEN, OPTIONALLY
+  }
+
   setup(context) {
     // TO BE OVERWRITTEN
     throw new NotImplementedError('setup');

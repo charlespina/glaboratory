@@ -12,6 +12,7 @@ uniform int show_brush_preview;
 uniform sampler2D brush_texture;
 
 varying vec2 v_uv;
+varying vec2 v_P;
 
 float iso_threshold = 0.03;
 
@@ -41,7 +42,7 @@ float brushValue( vec2 uv ) {
 }
 
 vec2 gradient( vec2 x ) {
-    float epsilon = 2.0/float(resolution);
+    float epsilon = 2.0 / float(resolution);
     vec2 h = vec2( epsilon, 0.0 );
     return vec2( brushValue(x+h.xy) - brushValue(x-h.xy),
                  brushValue(x+h.yx) - brushValue(x-h.yx) )/(2.0*h.x);

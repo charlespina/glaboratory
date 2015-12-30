@@ -4,7 +4,7 @@ var THREE = require('../../lib/three');
 
 class HelloWorld extends Experiment {
   constructor() {
-    super("Testing");
+    super("Hello World");
     this.addParameter(new Parameter("Test param", { type: 'i', value: 1 }));
     this.addParameter(new Parameter("Test paramaamamama", { type: 'f', value: 2 }));
     this.thumbnail = "images/test.png";

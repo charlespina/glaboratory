@@ -17,9 +17,9 @@ var THREE = require('./lib/three');
 
 [ require('./experiments/EnvironmentBlur/index'),
   require('./experiments/ReactionDiffusion/index'),
-  require('./experiments/HelloWorld/index'),
   require('./experiments/PBR/index'),
-  require('./experiments/Tea/index')
+  require('./experiments/Tea/index'),
+  require('./experiments/HelloWorld/index'),
 ].map(ExperimentStore.registerExperiment.bind(ExperimentStore));
 
 var App = React.createClass( {

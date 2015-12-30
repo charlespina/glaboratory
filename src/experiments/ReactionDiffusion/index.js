@@ -138,15 +138,22 @@ class ReactionDiffusion extends Experiment {
     this.initDisplay(context);
 
     var canvas = context.container;
-    $(canvas).mousemove(onMouseMove);
-    $(canvas).mouseup(onMouseUp);
-    $(canvas).mousedown(onMouseDown);
+    $(canvas).on('mousemove', onMouseMove);
+    $(canvas).on('mouseup', onMouseUp);
+    $(canvas).on('mousedown', onMouseDown);
   }
 
   dispose(context) {
+    var canvas = context.container;
+    $(canvas).off('mousemove', onMouseMove);
+    $(canvas).off('mouseup', onMouseUp);
+    $(canvas).off('mousedown', onMouseDown);
+
     this.context = null;
+    
     this.brushTip.dispose();
     this.brushTip = null;
+
     this.brush.dispose();
     this.brush = null;
   }
@@ -202,8 +209,10 @@ class ReactionDiffusion extends Experiment {
     display.mesh = new THREE.Mesh(geo, display.material);
     context.scene.add(display.mesh);
 
-    display.buffer.push(new THREE.WebGLRenderTarget(IMAGE_RESOLUTION, IMAGE_RESOLUTION, TextureUtils.renderTextureSettings));
-    display.buffer.push(new THREE.WebGLRenderTarget(IMAGE_RESOLUTION, IMAGE_RESOLUTION, TextureUtils.renderTextureSettings));
+    if (display.buffer.length == 0) {
+      display.buffer.push(new THREE.WebGLRenderTarget(IMAGE_RESOLUTION, IMAGE_RESOLUTION, TextureUtils.renderTextureSettings));
+      display.buffer.push(new THREE.WebGLRenderTarget(IMAGE_RESOLUTION, IMAGE_RESOLUTION, TextureUtils.renderTextureSettings));
+    }
     display.renderTexture = display.buffer[0];
     display.shaderParameters.background_texture.value = display.buffer[1];
 

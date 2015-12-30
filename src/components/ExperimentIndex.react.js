@@ -1,5 +1,5 @@
-var React = require('react');
 import ExperimentStore from '../stores/ExperimentStore';
+var React = require('react');
 var ReactRouter = require('react-router');
 var Link = ReactRouter.Link;
 
@@ -9,12 +9,12 @@ var ExperimentIndex = React.createClass({
     var experimentList = experiments.map(function(exp, i) {
       return (
         <Link to={"exp/"+exp.name} key={i} className="ui card">
+            <div className="image">
+              <img src={exp.thumbnail} style={{width: "100%", height: "100%"}} />
+            </div>
           <div className="content">
             <div className="header">
               {exp.name}
-            </div>
-            <div className="image">
-              <img src={exp.thumbnail} style={{width: "100%", height: "100%"}} />
             </div>
             <div className="description">
               {exp.description}
@@ -31,8 +31,10 @@ var ExperimentIndex = React.createClass({
             <div className="active section">Experiments</div>
           </div>
         </div>
-        <div className="ui four cards experiment-index">
-          {experimentList}
+        <div className="experiment-index">
+          <div className="ui five cards">
+            {experimentList}
+          </div>
         </div>
       </div>
     );

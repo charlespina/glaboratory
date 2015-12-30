@@ -47,28 +47,34 @@ class ExperimentStore extends Store {
   }
 
   setExperiment(experiment) {
-    if (this.currentExperiment
-      && experiment.name == this.currentExperiment.name)
-      return;
+    if (this.currentExperiment)
+      this.teardownExperiment();
+
     this.currentExperiment = experiment;
   }
 
   setupExperiment(context) {
-    if (!this.currentExperiment)
-      return;
-
-    if (this.currentExperiment.isSetup)
-      return;
-
-    this.currentExperiment.setup(context);
-
     var exp = this.currentExperiment;
+
+    if (!exp)
+      return;
+
+    if (exp.isSetup)
+      return;
+
+    exp.setup(context);
+
     context.addListener('update', exp.update.bind(exp));
     context.addListener('render', exp.render.bind(exp));
     context.addListener('dispose', exp.dispose.bind(exp));
+    context.addListener('resize', exp.resize.bind(exp));
 
-    this.currentExperiment.isSetup = true;
+    exp.isSetup = true;
+  }
 
+  teardownExperiment() {
+    var exp = this.currentExperiment;
+    exp.isSetup = false;
   }
 }
 
