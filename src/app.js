@@ -22,7 +22,7 @@ var THREE = require('./lib/three');
   require('./experiments/Tea/index')
 ].map(ExperimentStore.registerExperiment.bind(ExperimentStore));
 
-var App = React.createClass({
+var App = React.createClass( {
   render: function() {
     return (
       <div id="site" className="container-fluid">

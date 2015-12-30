@@ -214,4 +214,7 @@ exp.update = function(dt) {
   updateTexture(this.solver, this.dataTexture, this.vizColorMap, this.imageData);
 };
 
+exp.thumbnail = "images/tea.png";
+exp.description = "A fluid dynamic simulation of Thai Iced Tea.";
+
 module.exports = exp;

@@ -8,18 +8,30 @@ var ExperimentIndex = React.createClass({
     var experiments = ExperimentStore.experiments;
     var experimentList = experiments.map(function(exp, i) {
       return (
-        <li key={i}>
-          <Link to={"exp/"+exp.name}>
-            {exp.name}
-          </Link>
-        </li>
+        <Link to={"exp/"+exp.name} key={i} className="ui card">
+          <div className="content">
+            <div className="header">
+              {exp.name}
+            </div>
+            <div className="image">
+              <img src={exp.thumbnail} style={{width: "100%", height: "100%"}} />
+            </div>
+            <div className="description">
+              {exp.description}
+            </div>
+          </div>
+        </Link>
       );
     });
 
-    experimentList = <ul>{experimentList}</ul>;
     return (
-      <div className="ui grid">
-        <div>
+      <div>
+        <div className="topbar">
+          <div className="ui breadcrumb">
+            <div className="active section">Experiments</div>
+          </div>
+        </div>
+        <div className="ui four cards experiment-index">
           {experimentList}
         </div>
       </div>

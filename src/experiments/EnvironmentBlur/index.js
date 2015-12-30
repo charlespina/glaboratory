@@ -9,8 +9,6 @@ var vdc = require('vdc');
 var DIM = 32;
 var N = DIM*DIM; // 1024
 
-console.log(THREE.ShaderPass);
-
 var createVanDerCorputSequenceData = function(N) {
   var vdcData = new Float32Array(N);
 
@@ -83,5 +81,8 @@ exp.render = function(context) {
     this.dirty = false;
   }
 };
+
+exp.thumbnail = "images/env-blur.png";
+exp.description = "Convolution of a scene based on roughness, for use with PBR systems."
 
 module.exports = exp;

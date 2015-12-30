@@ -112,4 +112,7 @@ exp.update = function(dt) {
   this.mesh.rotation.y += 0.010;
 };
 
+exp.thumbnail = "images/pbr.png";
+exp.description = "Physically based rendering implementation.";
+
 module.exports = exp;

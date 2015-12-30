@@ -3,8 +3,8 @@ html {
 }
 
 #site {
-  height: 100vh;
   background-color: black;
+  height: 100vh;
   overflow: hidden;
   .row {
     height: calc(100% - 50px);
@@ -161,12 +161,6 @@ html {
 .experiment-viewer {
   display: flex;
   flex-flow: column;
-  .breadcrumb {
-    color: white;
-    .divider {
-      color: #cccccc;
-    }
-  }
   height: 100vh;
 }
 
@@ -175,6 +169,12 @@ html {
   padding: 0.67861em;
   background-color: #303030;
   border-bottom: 2px solid #111111;
+  .breadcrumb {
+    color: white;
+    .divider {
+      color: #cccccc;
+    }
+  }
 }
 
 .sidebar {
@@ -203,6 +203,12 @@ html {
   padding-left: 0;
   height: calc(100% - 38px);
   overflow: auto;
+}
+
+.experiment-index {
+  overflow: auto;
+  height: 100vh;
+  padding: 10px;
 }
 
 .context {
