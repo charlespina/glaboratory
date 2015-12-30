@@ -1,3 +1,7 @@
+import ExperimentStore from './stores/ExperimentStore';
+
+require("./css/main.scss");
+
 var React = require('react');
 var ReactDOM = require('react-dom');
 var ReactRouter = require('react-router');
@@ -6,7 +10,6 @@ var Route = ReactRouter.Route;
 var IndexRoute = ReactRouter.IndexRoute;
 var Router = ReactRouter.Router;
 
-import ExperimentStore from './stores/ExperimentStore';
 var ExperimentIndex = require('./components/ExperimentIndex.react');
 var ExperimentDetail = require('./components/ExperimentDetail.react');
 
