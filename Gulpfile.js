@@ -5,8 +5,12 @@ var config = require('./webpack.config');
 var webpack = require('webpack');
 var WebpackDevServer = require('webpack-dev-server');
 
-gulp.task('webpack:build', function() {
-  webpack(config);
+gulp.task('webpack:build', function(next) {
+  webpack(config, function(err, stats) {
+    if (err) throw new gutil.PluginError(err);
+    gutil.log('[webpack]', stats.toString({}));
+    next();
+  });
 });
 
 gulp.task('webpack:build-dev', function() {
