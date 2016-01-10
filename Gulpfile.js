@@ -3,13 +3,10 @@ var gutil = require('gulp-util');
 
 var config = require('./webpack.config');
 var webpack = require('webpack');
-var gulpWebpack = require('gulp-webpack');
 var WebpackDevServer = require('webpack-dev-server');
 
 gulp.task('webpack:build', function() {
-  return gulp.src('src/**.js')
-    .pipe(gulpWebpack(config))
-    .pipe(gulp.dest('public/'));
+  webpack(config);
 });
 
 gulp.task('webpack:build-dev', function() {
