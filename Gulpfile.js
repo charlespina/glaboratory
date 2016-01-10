@@ -35,4 +35,4 @@ gulp.task('webpack:build-dev', function() {
   });
 });
 
-gulp.task('default', ['watch']);
+gulp.task('default', ['build']);
