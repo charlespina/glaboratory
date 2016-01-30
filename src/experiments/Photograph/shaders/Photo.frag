@@ -4,7 +4,7 @@ uniform vec3 light_color;
 uniform vec3 light_direction;
 
 // pbr material settings
-uniform vec3 base_color_constant;
+uniform vec3 tint;
 uniform float roughness_constant;
 uniform float metalicity;
 uniform float specular_level;
@@ -138,7 +138,7 @@ void main() {
     light_color,
     light_intensity);
 
-  vec3 base_color = Degamma(texture2D(base_color_map, v_uv).rgb);
+  vec3 base_color = Degamma(tint) * Degamma(texture2D(base_color_map, v_uv).rgb);
   vec3 N = normalize(v_normal);
 
   float roughness = roughness_constant;

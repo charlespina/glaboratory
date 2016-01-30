@@ -10,7 +10,7 @@ import THREE from '../../lib/three';
 const photoUniforms = {
   "grain_size": {
     type: 'f',
-    value: 160.0,
+    value: 130.0,
     min: 0.0,
     max: 400.0,
   },
@@ -26,7 +26,7 @@ const photoUniforms = {
   },
   "roughness_constant": {
     type: 'f',
-    value: 0.25,
+    value: 0.38,
     min: 0.0,
     max: 1.0
   },
@@ -34,19 +34,21 @@ const photoUniforms = {
     type: 'f',
     min: 0,
     max: 1,
-    value: 0
+    value: 0,
+    hidden: true,
   },
   "specular_level": {
     type: 'f',
     min: 0,
     max: 0.08,
-    value: 0.04
+    value: 0.04,
+    hidden: true,
   },
   "base_color_map": {
     type: 't',
     value: null,
   },
-  "base_color_constant": {
+  "tint": {
     type: 'c',
     value: (new THREE.Color(0xFFFFFF))
   },
@@ -54,11 +56,11 @@ const photoUniforms = {
     type: 'f',
     min: 0,
     max: 10,
-    value: 1.8
+    value: 1.6
   },
   "light_color": {
     type: 'c',
-    value: new THREE.Color(0xFFFFFF) //(new THREE.Color(0x0064aa))
+    value: new THREE.Color(0xFFEEBA) //(new THREE.Color(0x0064aa))
   },
   "light_direction": {
     type: 'c',
