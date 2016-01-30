@@ -1,6 +1,6 @@
 import Experiment from '../../core/Experiment';
 import Parameter from '../../core/Parameter';
-var THREE = require('../../lib/three');
+import THREE from '../../lib/three';
 
 class HelloWorld extends Experiment {
   constructor() {

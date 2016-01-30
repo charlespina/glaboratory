@@ -1,10 +1,10 @@
 import Experiment from '../../core/Experiment';
 import ShaderParameter from '../../core/ShaderParameter';
 import Parameter from '../../core/Parameter';
-var OBJLoader = require('../../lib/OBJLoader');
-var THREE = require('../../lib/three');
-var vertShader = require('./shaders/pbr.vert');
-var fragShader = require('./shaders/pbr.frag');
+import OBJLoader from '../../lib/OBJLoader';
+import THREE from '../../lib/three';
+import vertShader from './shaders/pbr.vert';
+import fragShader from './shaders/pbr.frag';
 
 var uniforms = {
   "t": {

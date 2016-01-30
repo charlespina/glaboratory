@@ -11,7 +11,6 @@ var THREE = require('../../lib/three');
 var DisplayFrag = require('./shaders/Display.frag');
 var SharedVert = require('./shaders/Shared.vert');
 
-
 var SIM_RESOLUTION = 512;
 var IMAGE_RESOLUTION = 1024;
 
@@ -150,7 +149,7 @@ class ReactionDiffusion extends Experiment {
     $(canvas).off('mousedown', onMouseDown);
 
     this.context = null;
-    
+
     this.brushTip.dispose();
     this.brushTip = null;
 

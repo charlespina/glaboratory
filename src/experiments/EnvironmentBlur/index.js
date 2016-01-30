@@ -1,10 +1,10 @@
 import Experiment from '../../core/Experiment';
 import ShaderParameter from '../../core/ShaderParameter';
 import Parameter from '../../core/Parameter';
-var THREE = require('../../lib/three');
-var vertShader = require('./shaders/standard.vert');
-var fragShader = require('./shaders/reflection_blur.frag');
-var vdc = require('vdc');
+import THREE from '../../lib/three';
+import vertShader from './shaders/standard.vert';
+import fragShader from './shaders/reflection_blur.frag';
+import vdc from 'vdc';
 
 var DIM = 32;
 var N = DIM*DIM; // 1024

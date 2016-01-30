@@ -1,7 +1,7 @@
-var THREE = require('./../lib/three');
-var $ = require('jquery');
-var EventEmitter = require('events').EventEmitter;
-var assign = require('object-assign');
+import THREE from './../lib/three';
+import $ from 'jquery';
+import { EventEmitter } from 'events';
+import assign from 'object-assign';
 
 // events:
 // scene-setup - called once when the context is first initialized

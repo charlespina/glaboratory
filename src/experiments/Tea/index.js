@@ -1,11 +1,11 @@
 import Experiment from '../../core/Experiment';
 import Trigger from '../../core/Trigger';
-var THREE = require('../../lib/three');
-var simpleVert = require('./shaders/simple.vert');
-var cupFrag = require('./shaders/cup.frag');
-var glowFrag = require('./shaders/glow.frag');
-var fluidFrag = require('./shaders/fluid.frag');
-var $ = require('jquery');
+import THREE from '../../lib/three';
+import simpleVert from './shaders/simple.vert';
+import cupFrag from './shaders/cup.frag';
+import glowFrag from './shaders/glow.frag';
+import fluidFrag from './shaders/fluid.frag';
+import $ from 'jquery';
 
 var Solver = require('./Solver');
 var ColorMap = require('./ColorMap');
