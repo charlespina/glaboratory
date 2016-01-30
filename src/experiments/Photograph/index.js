@@ -3,6 +3,7 @@ import Parameter from '../../core/Parameter';
 import PhotoFrag from './shaders/Photo.frag';
 import PhotoVert from './shaders/Photo.vert';
 import imageURL from './textures/red-fox-300x400.jpg';
+import thumbnailURL from './textures/thumbnail.png';
 import ShaderParameter from '../../core/ShaderParameter';
 import THREE from '../../lib/three';
 
@@ -61,14 +62,15 @@ const photoUniforms = {
   },
   "light_direction": {
     type: 'c',
-    value: (new THREE.Color(0xCAA3FD))
+    // value: (new THREE.Color(0xCAA3FD))
+    value: new THREE.Color("rgb(100, 138, 198)")
   },
 };
 
 class Photograph extends Experiment {
   constructor() {
-    super("Photograph Experiment");
-    this.thumbnail = "images/test.png";
+    super("Photo Look");
+    this.thumbnail = thumbnailURL;
     this.description = "An image shaded like a photograph.";
     this.addParameters(ShaderParameter.fromUniformHash(photoUniforms));
   }
