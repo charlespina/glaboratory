@@ -1,4 +1,5 @@
 import ExperimentStore from './stores/ExperimentStore';
+import THREE from 'three';
 
 require("./css/main.scss");
 
@@ -13,7 +14,6 @@ var Router = ReactRouter.Router;
 var ExperimentIndex = require('./components/ExperimentIndex.react');
 var ExperimentDetail = require('./components/ExperimentDetail.react');
 
-var THREE = require('./lib/three');
 
 [ require('./experiments/EnvironmentBlur/index'),
   require('./experiments/ReactionDiffusion/index'),
@@ -21,6 +21,7 @@ var THREE = require('./lib/three');
   require('./experiments/Tea/index'),
   require('./experiments/HelloWorld/index'),
   require('./experiments/Photograph/index'),
+  require('./experiments/ParticleSystem/index'),
 ].map(ExperimentStore.registerExperiment.bind(ExperimentStore));
 
 var App = React.createClass( {

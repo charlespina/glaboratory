@@ -3,7 +3,7 @@ import TextureUtils from '../TextureUtils';
 import ShaderParameter from '../../../core/ShaderParameter';
 import Parameter from '../../../core/Parameter';
 
-var THREE = require('../../../lib/three');
+import THREE from 'three';
 
 const PaintBrushFrag = require('../shaders/PaintBrush.frag');
 const SharedVert = require('../shaders/Shared.vert');

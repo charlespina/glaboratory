@@ -2,7 +2,7 @@ import Experiment from '../../core/Experiment';
 import ShaderParameter from '../../core/ShaderParameter';
 import Parameter from '../../core/Parameter';
 import OBJLoader from '../../lib/OBJLoader';
-import THREE from '../../lib/three';
+import THREE from 'three';
 import vertShader from './shaders/pbr.vert';
 import fragShader from './shaders/pbr.frag';
 

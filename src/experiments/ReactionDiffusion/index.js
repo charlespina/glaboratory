@@ -7,7 +7,7 @@ import TextureUtils from './TextureUtils';
 import BrushTip from './sim-brushes/BrushTip';
 import ReactionDiffusionBrush from './sim-brushes/ReactionDiffusionBrush';
 import PaintBrush from './sim-brushes/PaintBrush';
-var THREE = require('../../lib/three');
+import THREE from 'three';
 var DisplayFrag = require('./shaders/Display.frag');
 var SharedVert = require('./shaders/Shared.vert');
 

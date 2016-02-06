@@ -1,4 +1,4 @@
-import THREE from './../lib/three';
+import THREE from 'three';
 import $ from 'jquery';
 import { EventEmitter } from 'events';
 import assign from 'object-assign';

@@ -1,6 +1,6 @@
 import Experiment from '../../core/Experiment';
 import Trigger from '../../core/Trigger';
-import THREE from '../../lib/three';
+import THREE from 'three';
 import simpleVert from './shaders/simple.vert';
 import cupFrag from './shaders/cup.frag';
 import glowFrag from './shaders/glow.frag';

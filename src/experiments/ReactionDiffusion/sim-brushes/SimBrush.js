@@ -1,4 +1,4 @@
-var THREE = require('../../../lib/three');
+import THREE from 'three';
 import TextureUtils from '../TextureUtils';
 
 class SimBrush {

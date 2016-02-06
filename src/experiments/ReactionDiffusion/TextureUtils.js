@@ -1,4 +1,4 @@
-var THREE = require('../../lib/three');
+import THREE from 'three';
 
 function swapBuffers(buffers) {
   var tmp = buffers[1];
