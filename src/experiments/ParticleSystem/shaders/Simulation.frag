@@ -5,6 +5,17 @@ varying vec2 vUV;
 uniform float uAttractionForce;
 uniform vec3 uAttractor;
 
+const float SCALE_FLOAT = 16.0;
+
+void decodeData(vec4 data, out vec2 p, out vec2 v) {
+  p = data.xy * SCALE_FLOAT;
+  v = data.zw * SCALE_FLOAT;
+}
+
+vec4 encodeData(vec2 p, vec2 v) {
+  return vec4(p, v) / SCALE_FLOAT;
+}
+
 void main() {
   vec4 data = texture2D(uParticleData, vUV);
 
@@ -13,17 +24,19 @@ void main() {
 
   const float t = 0.01;
 
-  // distance from attractor
-  vec2 p0 = data.xy;
-  vec2 tmp = p0 - uAttractor.xy;
-  tmp *= tmp;
-  float dist2 = tmp.x + tmp.y;
+  vec2 p0, v0;
+  decodeData(data, p0, v0);
 
-  vec2 a = vec2(0.0);
-  // vec2 v0 = data.zw;
-  vec2 v0 = p0;
+  // acceleration due to attractor
+  vec2 attractorP = uAttractor.xy * SCALE_FLOAT;
+  float dist2 = distance(attractorP, p0);
+  dist2 *= dist2;
+  vec2 towardAttractor = normalize(p0-attractorP);
+  vec2 a = vec2(uAttractionForce)/(dist2 + 0.01) * towardAttractor * SCALE_FLOAT;
+
+  // integrate
   vec2 v = v0 + a * t;
   vec2 p = p0 + v * t;
 
-  gl_FragColor = vec4(p, v);
+  gl_FragColor = encodeData(p, v);
 }

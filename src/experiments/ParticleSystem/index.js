@@ -5,6 +5,7 @@ import simulationVertShader from './shaders/Simulation.vert';
 import simulationFragShader from './shaders/Simulation.frag';
 import displayVertShader from './shaders/Display.vert';
 import displayFragShader from './shaders/Display.frag';
+import BrushTip from '../ReactionDiffusion/sim-brushes/BrushTip';
 
 class Simulation {
   constructor(context, dim, numParticles) {
@@ -44,23 +45,38 @@ class Simulation {
         },
         uAttractor: {
           type: 'v3',
-          value: new THREE.Vector3(0., 0.25, 0.0),
+          value: new THREE.Vector3(0.0, 0.0, 0.0),
         },
         uAttractionForce: {
           type: 'f',
-          value: -0.1,
+          value: -0.8,
         },
       }
     });
 
-    this.clearBuffers();
-    this.initializeData();
-
     this.quad = new THREE.Mesh(quadGeo, this.material);
     this.scene.add(this.quad);
 
+    this.clearBuffers();
+    this.initializeData();
+    this.attachEventListeners();
     // render once to stamp initial data into framebuffers
     this.render();
+  }
+
+  onMouseMove(event) {
+    const elem = this.context.renderer.domElement;
+    const x = (event.x - 10) / elem.clientWidth;
+    const y = (event.y - 50) / elem.clientHeight;
+    const attractor = this.material.uniforms.uAttractor;
+    attractor.value.x = x*2.0 - 1.0;
+    attractor.value.y = (1.0 - y)*2.0 - 1.0;
+    attractor.needsUpdate = true;
+  }
+
+  attachEventListeners() {
+    const domElement = this.context.renderer.domElement;
+    domElement.addEventListener('mousemove', this.onMouseMove.bind(this));
   }
 
   initializeData() {
@@ -132,10 +148,11 @@ class ParticleSystem extends Experiment {
     console.log('float extension: ', floatExtension);
     console.log('draw buffers extension: ', drawBuffersExtension); // not using yet, but one day
 
-    const PARTICLE_DIM = 128;
+    const PARTICLE_DIM = 512;
     const NUM_PARTICLES = PARTICLE_DIM * PARTICLE_DIM;
 
     this.context = context;
+    this.context.camera = new THREE.OrthographicCamera(-1.0, 1.0, 1.0, -1.0, 0.1, -10.0);
     this.simulation = new Simulation(context, PARTICLE_DIM);
     this.display = {
       geo: new THREE.BufferGeometry(),
@@ -174,6 +191,7 @@ class ParticleSystem extends Experiment {
       transparent: true,
       blending: THREE.AdditiveBlending,
     });
+
     this.display.mesh = new THREE.Points(this.display.geo, this.display.material);
     this.display.mesh.frustumCulled = false;
 
@@ -181,6 +199,12 @@ class ParticleSystem extends Experiment {
     this.display.material.uniforms.uParticleData.value.needsUpdate = true;
 
     context.scene.add(this.display.mesh);
+
+    const sphereGeo = new THREE.SphereGeometry(32, 32, 32);
+    const sphereMat = new THREE.MeshBasicMaterial({color: 0x000000});
+    this.sun = new THREE.Mesh(sphereGeo, sphereMat);
+
+    // context.scene.add(this.sun);
   }
 
   update(dt) {

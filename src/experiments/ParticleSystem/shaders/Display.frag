@@ -7,7 +7,7 @@ void main() {
 
   // debug
   vec3 debug = vec3(vUV, 0.0);
-  gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+  gl_FragColor = vec4(vUV.x/0.5, 0.0, vUV.y/0.5, 0.3);
 
   // final:
   // gl_FragColor = vec4(data.rgb, 1.0);
