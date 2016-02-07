@@ -1,5 +1,4 @@
 import SimBrush from './SimBrush';
-import TextureUtils from '../TextureUtils';
 import ShaderParameter from '../../../core/ShaderParameter';
 import Parameter from '../../../core/Parameter';
 
