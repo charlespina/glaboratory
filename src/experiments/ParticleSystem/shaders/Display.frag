@@ -1,13 +1,23 @@
+#extension GL_OES_standard_derivatives : enable
+
 uniform sampler2D uParticleData;
+uniform sampler2D uBrush;
+
 varying vec2 vUV;
 // uniform sampler2D uParticleSprite;
+
+
+
 
 void main() {
   vec4 data = texture2D(uParticleData, vUV);
 
   // debug
-  vec3 debug = vec3(vUV, 0.0);
-  gl_FragColor = vec4(vUV.x/0.5, 0.0, vUV.y/0.5, 0.3);
+  float brush = texture2D(uBrush, vUV).x;
+
+  // brush gradient
+
+  gl_FragColor = vec4(brush, 0.0, 1.0, 0.3);
 
   // final:
   // gl_FragColor = vec4(data.rgb, 1.0);

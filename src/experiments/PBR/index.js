@@ -104,7 +104,6 @@ class PBR extends Experiment {
     });
 
     var geo = new THREE.SphereGeometry(100, 64, 46);
-    geo.computeTangents();
 
     context.camera.position.z = 200;
 

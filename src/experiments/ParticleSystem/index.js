@@ -51,6 +51,10 @@ class Simulation {
           type: 'f',
           value: -0.8,
         },
+        uForceDistanceField: {
+          type: 't',
+          value: null,
+        }
       }
     });
 
@@ -59,24 +63,13 @@ class Simulation {
 
     this.clearBuffers();
     this.initializeData();
-    this.attachEventListeners();
     // render once to stamp initial data into framebuffers
     this.render();
   }
 
-  onMouseMove(event) {
-    const elem = this.context.renderer.domElement;
-    const x = (event.x - 10) / elem.clientWidth;
-    const y = (event.y - 50) / elem.clientHeight;
-    const attractor = this.material.uniforms.uAttractor;
-    attractor.value.x = x*2.0 - 1.0;
-    attractor.value.y = (1.0 - y)*2.0 - 1.0;
-    attractor.needsUpdate = true;
-  }
-
-  attachEventListeners() {
-    const domElement = this.context.renderer.domElement;
-    domElement.addEventListener('mousemove', this.onMouseMove.bind(this));
+  setForceDistanceField(texture) {
+    this.material.uniforms.uForceDistanceField.value = texture;
+    this.material.uniforms.uForceDistanceField.needsUpdate = true;
   }
 
   initializeData() {
@@ -143,13 +136,15 @@ class ParticleSystem extends Experiment {
 
   setup(context) {
     const floatExtension = context.renderer.context.getExtension('OES_texture_float');
+    const derivativesExtension = context.renderer.context.getExtension('OES_standard_derivatives');
     const drawBuffersExtension = context.renderer.context.getExtension('WEBGL_draw_buffers');
 
     console.log('float extension: ', floatExtension);
     console.log('draw buffers extension: ', drawBuffersExtension); // not using yet, but one day
 
-    const PARTICLE_DIM = 512;
+    const PARTICLE_DIM = 2048;
     const NUM_PARTICLES = PARTICLE_DIM * PARTICLE_DIM;
+    const BRUSH_DIM = 128;
 
     this.context = context;
     this.context.camera = new THREE.OrthographicCamera(-1.0, 1.0, 1.0, -1.0, 0.1, -10.0);
@@ -162,6 +157,12 @@ class ParticleSystem extends Experiment {
       },
       material: null,
       mesh: null,
+    };
+
+    this.mouse = {
+      pressed: false,
+      x: 0.0,
+      y: 0.0
     };
 
     const vertexBuffer = this.display.vertices.buffer;
@@ -186,6 +187,10 @@ class ParticleSystem extends Experiment {
           type: 't',
           value: null,
         },
+        uBrush: {
+          type: 't',
+          value: null,
+        },
       },
       depthWrite: false,
       transparent: true,
@@ -200,14 +205,89 @@ class ParticleSystem extends Experiment {
 
     context.scene.add(this.display.mesh);
 
+    this.brushTip = new BrushTip(context, BRUSH_DIM);
+    this.simulation.setForceDistanceField(this.brushTip.output);
+
+    this.display.material.uniforms.uBrush.value = this.brushTip.output;
+    this.display.material.uniforms.uBrush.needsUpdate = true;
+
+    this.quad = new THREE.Mesh(new THREE.PlaneBufferGeometry(2, 2, 2), new THREE.MeshBasicMaterial({color: 0xFFFFFF}));
+    this.quad.position.z = -1;
+    context.scene.add(this.quad);
+
+    this.attachEventListeners();
+    this.setupParameters();
+
+    /*
     const sphereGeo = new THREE.SphereGeometry(32, 32, 32);
     const sphereMat = new THREE.MeshBasicMaterial({color: 0x000000});
     this.sun = new THREE.Mesh(sphereGeo, sphereMat);
+    context.scene.add(this.sun);
+    */
+  }
 
-    // context.scene.add(this.sun);
+  setupParameters() {
+    this.addParameters(this.brushTip.parameters);
+  }
+
+  /*
+  onMouseMove(event) {
+    const elem = this.context.renderer.domElement;
+    const x = (event.x - 10) / elem.clientWidth;
+    const y = (event.y - 50) / elem.clientHeight;
+
+    // attractor.value.x = x*2.0 - 1.0;
+    // attractor.value.y = (1.0 - y)*2.0 - 1.0;
+  }*/
+
+  onMouseUp(event) {
+    this.mouse.pressed = false;
+    event.preventDefault();
+  }
+
+  onMouseDown(event) {
+    this.mouse.pressed = true;
+    event.preventDefault();
+  }
+
+  onMouseMove(event) {
+    event.preventDefault();
+    this.mouse.x = (event.offsetX / event.target.clientWidth) * 2 - 1;
+    this.mouse.y = 1.0 - (event.offsetY / event.target.clientHeight) * 2;
+  }
+
+  attachEventListeners() {
+    const domElement = this.context.renderer.domElement;
+    domElement.addEventListener('mousemove', this.onMouseMove.bind(this));
+    domElement.addEventListener('mousedown', this.onMouseDown.bind(this));
+    domElement.addEventListener('mouseup', this.onMouseUp.bind(this));
+  }
+
+  updateDrawingState() {
+    this.raycaster = this.raycaster || new THREE.Raycaster();
+    this.mouseVect = this.mouseVect || new THREE.Vector2();
+    this.mouseVect.x = this.mouse.x/2.0;
+    this.mouseVect.y = this.mouse.y/2.0;
+
+    this.raycaster.setFromCamera(this.mouseVect, this.context.camera);
+    var intersections = this.raycaster.intersectObject(this.quad);
+    var intersection = intersections.length > 0 && intersections[0];
+
+    if (intersection) {
+      this.brushTip.isDrawing = this.mouse.pressed;
+      this.brushTip.draw(intersection.point);
+    }
+
+    if (!this.mouse.pressed) {
+      this.brushTip.isDrawing = this.mouse.pressed;
+    }
   }
 
   update(dt) {
+    // todo: detect drawing
+    this.updateDrawingState();
+
+    this.brushTip.update(dt);
     this.simulation.update(dt);
 
     this.display.material.uniforms.uParticleData.value = this.simulation.buffers.current;
@@ -219,7 +299,6 @@ class ParticleSystem extends Experiment {
   }
 
   render() {
-    // do nothing
     // this.context.renderer.clear()
     this.context.renderer.render(this.context.scene, this.context.camera);
   }

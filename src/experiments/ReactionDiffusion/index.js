@@ -190,7 +190,6 @@ class ReactionDiffusion extends Experiment {
     display.camera = context.camera;
     context.camera.position.z = 1;
     var geo = new THREE.PlaneBufferGeometry(1, 1, 1, 1);
-    geo.computeTangents();
     geo.computeVertexNormals();
     display.shaderParameters.data_texture.value = this.brush.output;
     display.shaderParameters.data_texture.needsUpdate = true;

@@ -86,7 +86,6 @@ class Photograph extends Experiment {
       uniforms: photoUniforms
     });
     geo.computeVertexNormals();
-    geo.computeTangents();
     this.mesh = new THREE.Mesh(geo, material);
     context.scene.add(this.mesh);
     this.t = 0.0;

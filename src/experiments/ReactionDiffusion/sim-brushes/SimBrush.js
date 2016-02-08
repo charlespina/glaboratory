@@ -63,7 +63,6 @@ class SimBrush {
     this.material.derivitives = true;
 
     const geometry = new THREE.PlaneBufferGeometry(1, 1, 1, 1);
-    geometry.computeTangents();
     geometry.computeVertexNormals()
 
     this.scene = new THREE.Mesh(geometry, this.material);
