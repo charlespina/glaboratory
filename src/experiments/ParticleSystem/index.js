@@ -130,8 +130,8 @@ class Simulation {
 class ParticleSystem extends Experiment {
   constructor() {
     super("Particle System");
-    this.thumbnail = "images/test.png";
-    this.description = "A test showing basic experiment functionality.";
+    this.thumbnail = "images/particles.png";
+    this.description = "A GPU accelerated, interactive particle system.";
   }
 
   setup(context) {
