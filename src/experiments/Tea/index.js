@@ -95,7 +95,7 @@ class Tea extends Experiment {
     this.context.camera.position.z = 2;
 
     // compute setup
-    this.cameraRTT = new THREE.OrthographicCamera(-0.5, 0.5, 0.5, -0.5, 1, 10);
+    this.cameraRTT = new THREE.OrthographicCamera(-0.5, 0.5, -0.5, 0.5, 1, 10);
     this.cameraRTT.position.z = 2;
     this.sceneRTT = new THREE.Scene();
     this.renderTexture = new THREE.WebGLRenderTarget(512, 512, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter, format: THREE.RGBFormat });
@@ -104,8 +104,11 @@ class Tea extends Experiment {
     this.solver = new Solver(N, 0.0, 0.0005);
 
     {
-      var dataMaterial = new THREE.MeshBasicMaterial({ map: this.dataTexture });
-      var plane = new THREE.PlaneGeometry(1, 1, 1, 1); // TODO: make this resize on screen resize
+      var dataMaterial = new THREE.MeshBasicMaterial({ 
+        map: this.dataTexture,
+        side: THREE.DoubleSide
+      });
+      var plane = new THREE.PlaneBufferGeometry(1, 1, 1, 1); // TODO: make this resize on screen resize
       var quad = new THREE.Mesh(plane, dataMaterial);
       this.sceneRTT.add(quad);
     }
@@ -116,7 +119,7 @@ class Tea extends Experiment {
         var scale = 2.5;
         var aspect = 1.6/scale;
 
-        var bgGeo = new THREE.PlaneGeometry(500, 500); //scale, scale*aspect);
+        var bgGeo = new THREE.PlaneBufferGeometry(500, 500); //scale, scale*aspect);
         // var bgGeo = new THREE.SphereGeometry(100, 64, 64);
 
         var bgMaterial = new THREE.MeshBasicMaterial({
