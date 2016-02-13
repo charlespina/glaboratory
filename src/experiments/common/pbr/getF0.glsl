@@ -11,3 +11,5 @@ vec3 getF0(float specular_level, float metalicity, vec3 base_color) {
   F0 = mix(F0, base_color, metalicity);
   return F0;
 }
+
+#pragma glslify: export(getF0)

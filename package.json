@@ -16,7 +16,7 @@
     "flux": "^2.1.1",
     "glsl-noise": "0.0.0",
     "glslify": "^5.0.2",
-    "glslify-loader": "^1.0.2",
+    "glslify-loader": "https://github.com/charlespina/glslify-loader.git",
     "history": "^1.15.0",
     "jquery": "^2.1.3",
     "keycode": "^2.1.0",
