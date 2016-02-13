@@ -20,8 +20,8 @@ module.exports = {
         loader: "file",
       },
       {
-        test: /\.(frag|vert)$/,
-        loader: "raw"
+        test: /\.(frag|vert|glsl)$/,
+        loaders: [ "raw", "glslify" ]
       }
     ],
     sassLoader: {

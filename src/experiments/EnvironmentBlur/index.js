@@ -2,8 +2,8 @@ import Experiment from '../../core/Experiment';
 import ShaderParameter from '../../core/ShaderParameter';
 import Parameter from '../../core/Parameter';
 import THREE from 'three';
-import vertShader from './shaders/standard.vert';
-import fragShader from './shaders/reflection_blur.frag';
+import vertShader from '../common/Standard.vert';
+import fragShader from './shaders/ReflectionBlur.frag';
 import vdc from 'vdc';
 
 var DIM = 32;

@@ -3,23 +3,14 @@ uniform float roughness_constant;
 uniform sampler2D reflection_map;
 uniform sampler2D vdc_map;
 
-varying mat4 v_model_view_matrix;
-varying vec3 v_normal;
-varying vec2 v_uv;
-
-varying vec3 P;
+varying vec3 vN;
+varying vec2 vUV;
+varying vec3 vP;
 
 #define PI 3.14159
 
-vec3 degamma(vec3 color) {
-  //return color;
-  return pow(color, vec3(2.2, 2.2, 2.2));
-}
-
-vec3 gamma(vec3 color) {
-  //return color;
-  return pow(color, vec3(0.4545));
-}
+#pragma glslify: gamma = require(../../common/color/gamma)
+#pragma glslify: degamma = require(../../common/color/degamma)
 
 vec3 ImportanceSampleGGX( vec2 Xi, float Roughness, vec3 N ) {
   float a = Roughness * Roughness;
@@ -74,7 +65,7 @@ vec3 PrefilterEnvMap( float Roughness, vec3 R ) {
 }
 
 void main() {
-  vec3 N = normalize(v_normal);
+  vec3 N = normalize(vN);
   //vec2 debugColor = Hammersley((int)(P.x*1024.0), 1024);
   //vec3 color = texture2D(vdc_map, N.xy*0.5 + vec2(0.5)).rgb;
   //vec3 color = vec3(Hammersley(int((N.x*0.5+0.5)*1024.0), 1024).rg, 0.0, 0.0);
