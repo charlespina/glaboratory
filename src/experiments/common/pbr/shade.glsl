@@ -1,3 +1,5 @@
+#pragma glslify: safeDot = require(../math/safeDot)
+#pragma glslify: Material = require(./Material)
 
 #define PI 3.14159
 
@@ -25,27 +27,27 @@ float distributionTerm(float NdH, float alpha2) {
   return alpha2/(PI * D_denominator * D_denominator + 0.0001);
 }
 
-vec3 shade(vec3 L, vec3 V, vec3 N, float roughness, float metalicity, vec3 F0, vec3 base_color) {
-  float alpha2 = roughness * roughness;
+vec3 shade(vec3 L, vec3 V, vec3 N, Material material) {
+  float alpha2 = material.roughness * material.roughness;
   alpha2 *= alpha2;
 
   vec3 H = normalize(V+L);
 
-  float VdH = max(dot(V, H), 0.0);
-  float NdH = max(dot(N, H), 0.0);
-  float NdL = max(dot(N, L), 0.0);
-  float NdV = max(dot(N, V), 0.0);
+  float VdH = safeDot(V, H);
+  float NdH = safeDot(N, H);
+  float NdL = safeDot(N, L);
+  float NdV = safeDot(N, V);
 
   float D = distributionTerm(NdH, alpha2);
-  float Gl = geometryTerm(roughness, L, N, H);
-  float Gv = geometryTerm(roughness, V, N, H);
-  vec3 F = fresnelTerm(VdH, F0);
+  float Gl = geometryTerm(material.roughness, L, N, H);
+  float Gv = geometryTerm(material.roughness, V, N, H);
+  vec3 F = fresnelTerm(VdH, material.F0);
 
   vec3 specular_contribution = F*(Gl*Gv*D/(4.0*NdL*NdV + 0.001));
 
   // metals don't have a diffuse contribution, so turn off the diffuse color
   // when the material is metallic
-  vec3 diffuse_color = base_color * (1.0 - metalicity);
+  vec3 diffuse_color = material.base_color * (1.0 - material.metalicity);
 
   // use reflectance to calculate energy conservation
   // diffuse_color *= vec3(1.0, 1.0, 1.0) - F0;

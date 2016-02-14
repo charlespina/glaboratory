@@ -6,8 +6,9 @@ uniform float roughness_constant;
 uniform float roughness_boost;
 uniform float roughness_gain;
 uniform sampler2D roughness_map;
-
 uniform sampler2D normal_map;
+
+uniform mat4 modelViewMatrix;
 
 uniform float light_intensity;
 uniform vec3 light_color;
@@ -15,26 +16,23 @@ uniform vec3 light_direction;
 
 uniform float metalicity;
 uniform float specular_level;
-
 uniform float t;
+
 
 varying vec3 vN;
 varying vec2 vUV;
 varying vec3 vP;
 varying mat3 vTBN;
-uniform mat4 modelViewMatrix;
-
-#define PI 3.14159
-#define MIN 0.0001
-#define NUM_LIGHTS 3
-
 
 #pragma glslify: Light = require(../../common/Light)
 #pragma glslify: getNormal = require(../../common/normals/getNormal)
 #pragma glslify: getF0 = require(../../common/pbr/getF0)
 #pragma glslify: gamma = require(../../common/color/gamma)
 #pragma glslify: degamma = require(../../common/color/degamma)
+#pragma glslify: Material = require(../../common/pbr/Material)
 #pragma glslify: shade = require(../../common/pbr/shade)
+
+#define NUM_LIGHTS 3
 
 Light lights[NUM_LIGHTS];
 
@@ -81,9 +79,16 @@ void main() {
   // ambient lighting, to fake an image based map
   accumulated_light += base_color * vec3(0.1, 0.1, 0.1);
 
+  Material material = Material(
+    metalicity,
+    roughness,
+    base_color,
+    F0
+  );
+
   for(int i=0; i < NUM_LIGHTS; i++) {
     vec3 L = lights[i].dir;
-    accumulated_light += shade(L, V, N, roughness, metalicity, F0, base_color)
+    accumulated_light += shade(L, V, N, material)
       * lights[i].color * lights[i].intensity;
   }
 
