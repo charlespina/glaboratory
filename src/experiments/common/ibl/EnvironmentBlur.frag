@@ -14,12 +14,13 @@ varying vec3 vP;
 #define PI 3.14159
 #endif
 
+#pragma glslify: uvToNormal = require(./envMapEquirectInverse)
 #pragma glslify: envMapEquirect = require(./envMapEquirect)
 #pragma glslify: gamma = require(../color/gamma)
 #pragma glslify: degamma = require(../color/degamma)
 #pragma glslify: rgbToRgbd = require(../color/rgbToRgbd)
 
-vec3 uvToNormal(vec2 uv) {
+/*vec3 uvToNormal(vec2 uv) {
   // create hemisphere from uv's, to use for ray testing
   vec3 N;
 
@@ -29,7 +30,7 @@ vec3 uvToNormal(vec2 uv) {
   N.y = uv2.y * 0.59; // sin(uv2.y*PI); //1.0; // sin(uv.x*PI);
   N.z = cos(uv2.x*PI); //2.0 * uv.y - 1.0;
   return N;
-}
+}*/
 
 vec3 ImportanceSampleGGX( vec2 Xi, float Roughness, vec3 N ) {
   float a = Roughness * Roughness;
