@@ -16,7 +16,7 @@ module.exports = {
         loaders: ['babel-loader?presets[]=react,presets[]=es2015'],
       },
       {
-        test: /\.(jpg|png|gif)$/,
+        test: /\.(jpg|png|gif|hdr)$/,
         loader: "file",
       },
       {
