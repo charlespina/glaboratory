@@ -112,7 +112,7 @@ class PBRIBL extends Experiment {
       },
       texture_lod: {
         type: 'f',
-        value: 1.0,
+        value: 0.0,
         min: 0.0,
         max: 9.0
       },
@@ -124,7 +124,7 @@ class PBRIBL extends Experiment {
       },
       texture_scale: {
         type: 'f',
-        value: 1.7,
+        value: 1.0,
         min: 0.01,
         max: 10.0,
       }

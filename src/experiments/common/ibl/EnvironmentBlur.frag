@@ -23,9 +23,11 @@ vec3 uvToNormal(vec2 uv) {
   // create hemisphere from uv's, to use for ray testing
   vec3 N;
 
-  N.x = 2.0 * uv.x - 1.0;
-  N.y = 2.0 * uv.y - 1.0;
-  N.z = 1.0; // sin(uv.x*PI);
+  vec2 uv2 = 2.0 * uv - vec2(1.0);
+
+  N.x = sin(uv2.x*PI); //uv2.x;
+  N.y = uv2.y * 0.59; // sin(uv2.y*PI); //1.0; // sin(uv.x*PI);
+  N.z = cos(uv2.x*PI); //2.0 * uv.y - 1.0;
   return N;
 }
 
