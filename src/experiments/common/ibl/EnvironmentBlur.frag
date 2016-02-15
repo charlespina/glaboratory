@@ -22,9 +22,10 @@ varying vec3 vP;
 vec3 uvToNormal(vec2 uv) {
   // create hemisphere from uv's, to use for ray testing
   vec3 N;
+
   N.x = 2.0 * uv.x - 1.0;
   N.y = 2.0 * uv.y - 1.0;
-  N.z = sin(uv.x*PI);
+  N.z = 1.0; // sin(uv.x*PI);
   return N;
 }
 
@@ -84,5 +85,5 @@ void main() {
   //vec2 debugColor = Hammersley((int)(P.x*1024.0), 1024);
   //vec3 color = texture2D(vdc_map, vec2(vUV.x, 0.5)).rgb;
   //vec3 color = vec3(Hammersley(int((N.x*0.5+0.5)*1024.0), 1024).rg, 0.0, 0.0);
-  gl_FragColor = rgbToRgbd(gamma(PrefilterEnvMap(roughness_constant, N)));
+  gl_FragColor = rgbToRgbd((PrefilterEnvMap(roughness_constant, N)));
 }

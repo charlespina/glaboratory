@@ -70,6 +70,8 @@ class ImageBasedLightGenerator {
     const baseTexture = this.compute.run();
     const baseImage = RenderUtil.createImage(this.renderSystem, baseTexture, this.resolution, this.resolution);
     const result = new THREE.CanvasTexture(baseImage);
+    result.wrapS = THREE.RepeatWrapping;
+    result.wrapT = THREE.RepeatWrapping;
     result.minFilter = THREE.LinearMipMapLinearFilter;
     result.magFilter = THREE.NearestFilter;
     result.format = THREE.RGBAFormat;

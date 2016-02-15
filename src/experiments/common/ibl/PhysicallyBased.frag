@@ -34,7 +34,7 @@ varying mat3 vTBN;
 #define NUM_LIGHTS 3
 
 // 2^8 = 256 texture resolution. 0-indexed, so subtract 1.
-#define IBL_MAX_LEVELS 7.0
+#define IBL_MAX_LEVELS 9.0
 
 #pragma glslify: normalToUv = require(./envMapEquirect)
 #pragma glslify: rgbdToRgb = require(../color/rgbdToRgb)
@@ -45,6 +45,7 @@ varying mat3 vTBN;
 #pragma glslify: shade = require(../pbr/shade)
 #pragma glslify: getF0 = require(../pbr/getF0)
 #pragma glslify: safeDot = require(../math/safeDot)
+#pragma glslify: tonemap = require(../color/tonemap-uncharted)
 
 #ifndef PI
 #define PI 3.14159
@@ -52,7 +53,7 @@ varying mat3 vTBN;
 
 vec3 sampleEnvironment(vec3 N, float roughness) {
   vec2 env_uv = normalToUv(N);
-  return ibl_exposure * rgbdToRgb(texture2DLodEXT(ibl_map, env_uv, roughness*IBL_MAX_LEVELS));
+  return (rgbdToRgb(texture2DLodEXT(ibl_map, env_uv, roughness*IBL_MAX_LEVELS)));
 }
 
 vec3 getSpecularIBL(vec3 specular_color, float roughness, vec3 N, vec3 V, vec3 vertex_normal) {
@@ -132,11 +133,11 @@ void main() {
 
   // IBL contribution
   // diffuse contribution from environment
-  accumulated_light += base_color * (sampleEnvironment(N, 0.9) / PI) * (vec3(1.0) - F0) * (1.0 - metalicity);
+  accumulated_light += ibl_exposure * base_color * (sampleEnvironment(N, 0.9) / PI) * (1.0 - metalicity);
   // specular contribution from environment
-  accumulated_light += getSpecularIBL(F0, roughness_raw, N, V, Ninit);
+  accumulated_light += ibl_exposure * getSpecularIBL(F0, roughness_raw, N, V, Ninit);
   vec3 final = accumulated_light;
-  final = linearToGamma(final);
+  final = linearToGamma(tonemap(final));
 
   // gl_FragColor = vec4(getSpecularIBL(F0, roughness_raw, N, V, Ninit), 1.0); //N, 0.9), 1.0);
   // gl_FragColor = vec4(getSpecular, 0.0, 1.0);

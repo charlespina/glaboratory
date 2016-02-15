@@ -3,9 +3,12 @@
 #endif
 
 vec2 envMapEquirect(vec3 R) {
-  float phi = acos(-R.y);
   float theta = atan(-R.x, R.z) + PI;
-  return vec2(theta / (PI * 2.0), phi / PI);
+  theta /= 2.0 * PI;
+
+  float phi = acos(-R.y);
+  phi /= PI;
+  return vec2(theta, phi);
 }
 
 #pragma glslify: export(envMapEquirect)

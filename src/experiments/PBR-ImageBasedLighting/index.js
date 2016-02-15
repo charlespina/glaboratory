@@ -6,7 +6,8 @@ import iblMapUrl from '../HDR/textures/Newport_Loft_Ref.hdr';
 import { generateImageBasedLight } from '../common/ibl/ImageBasedLightGenerator';
 import PBRFrag from '../common/ibl/PhysicallyBased.frag';
 import PBRVert from '../common/StandardRawTBN.vert';
-import TrackballControls from '../../lib/TrackballControls';
+import BGFrag from '../common/Texture.frag';
+import BGVert from '../common/StandardRaw.vert';
 
 class PBRIBL extends Experiment {
   constructor() {
@@ -49,6 +50,7 @@ class PBRIBL extends Experiment {
         value: 0,
         min: 0,
         max: 1,
+        hidden: true,
       },
       brdf_map: {
         type: 't',
@@ -60,24 +62,27 @@ class PBRIBL extends Experiment {
       },
       ibl_exposure: {
         type: 'f',
-        value: 1.0,
+        value: 2.2,
         min: 0.0,
         max: 3.0,
+        hidden: true,
       },
     };
   }
 
   setup(context) {
+    this.context = context;
     generateImageBasedLight(context, iblMapUrl).then(({ ibl, brdf })=> {
       this.uniforms.ibl_map.value = ibl;
       this.uniforms.ibl_map.needsUpdate = true;
 
       this.uniforms.brdf_map.value = brdf;
       this.uniforms.brdf_map.needsUpdate = true;
+
+      this.bgUniforms.texture_map.value = ibl;
+      this.bgUniforms.texture_map.needsUpdate = true;
     });
 
-
-    this.addParameters(ShaderParameter.fromUniformHash(this.uniforms));
 
     var geo = new THREE.SphereGeometry(100, 64, 64);
     var material = new THREE.RawShaderMaterial({
@@ -87,21 +92,80 @@ class PBRIBL extends Experiment {
     });
     this.mesh = new THREE.Mesh(geo, material);
     context.scene.add(this.mesh);
-    const controls = new TrackballControls( context.camera, context.domElement);
-    controls.rotateSpeed = 1.0;
-    controls.zoomSpeed = 1.2;
-    controls.panSpeed = 0.8;
-    controls.noZoom = false;
-    controls.noPan = false;
-    controls.staticMoving = true;
-    controls.dynamicDampingFactor = 0.3;
-    controls.keys = [ 65, 83, 68 ];
     //controls.addEventListener('change', ()=>context.render());
+
+
+    // background
+    this.orthoCam = new THREE.OrthographicCamera(-0.5, 0.5, 0.5, -0.5, 1, 10);
+    this.orthoCam.position.z = 2
+    this.bgUniforms = {
+      texture_map: {
+        type: 't',
+        value: null,
+      },
+      texture_exposure: {
+        type: 'f',
+        value: this.uniforms.ibl_exposure.value,
+        min: 0.01,
+        max: 10.0,
+        hidden: true,
+      },
+      texture_lod: {
+        type: 'f',
+        value: 1.0,
+        min: 0.0,
+        max: 9.0
+      },
+      texture_offset: {
+        type: 'f',
+        value: 0.0,
+        min: -1.0,
+        max: 1.0,
+      },
+      texture_scale: {
+        type: 'f',
+        value: 1.7,
+        min: 0.01,
+        max: 10.0,
+      }
+    };
+    this.bgMaterial = new THREE.RawShaderMaterial({
+      fragmentShader: BGFrag,
+      vertexShader: BGVert,
+      uniforms: this.bgUniforms,
+      depthWrite: false,
+    });
+    this.bg = new THREE.Mesh(new THREE.PlaneBufferGeometry(1, 1, 1, 1),
+      this.bgMaterial);
+    this.bgScene = new THREE.Scene();
+    this.bgScene.add(this.bg);
+
+    const exposureParameter = new Parameter('Exposure', {
+      type: 'f',
+      value: this.uniforms.ibl_exposure.value,
+      min: 0.0,
+      max: 8.0,
+    });
+    exposureParameter.onChange = this.onExposureChange.bind(this);
+    this.addParameter(exposureParameter);
+    this.addParameters(ShaderParameter.fromUniformHash(this.uniforms));
+    this.addParameters(ShaderParameter.fromUniformHash(this.bgUniforms));
+  }
+
+  onExposureChange(val) {
+    this.uniforms.ibl_exposure.value = val;
+    this.uniforms.ibl_exposure.needsUpdate = true;
+    this.bgUniforms.texture_exposure.value = val;
+    this.bgUniforms.texture_exposure.needsUpdate = true;
   }
 
   update(dt) {
-    this.t = (this.t||0) + dt;
-    this.mesh.position.y = Math.sin(this.t/5000 * Math.PI) * 20;
+  }
+
+  render() {
+    this.context.renderer.autoClear = false;
+    this.context.renderer.render(this.bgScene, this.orthoCam);
+    this.context.renderDefaultCamera();
   }
 }
 
