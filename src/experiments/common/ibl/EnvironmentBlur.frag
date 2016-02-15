@@ -10,21 +10,21 @@ varying vec3 vN;
 varying vec2 vUV;
 varying vec3 vP;
 
+#ifndef PI
 #define PI 3.14159
+#endif
 
-vec3 degamma(vec3 color) {
-  return pow(color, vec3(2.2, 2.2, 2.2));
-}
-
-vec3 gamma(vec3 color) {
-  return pow(color, vec3(0.4545));
-}
+#pragma glslify: envMapEquirect = require(./envMapEquirect)
+#pragma glslify: gamma = require(../color/gamma)
+#pragma glslify: degamma = require(../color/degamma)
+#pragma glslify: rgbToRgbd = require(../color/rgbToRgbd)
 
 vec3 uvToNormal(vec2 uv) {
   // create hemisphere from uv's, to use for ray testing
   vec3 N;
-  N.xy = 2.0 * uv - vec2(1.0);
-  N.z = sqrt(N.x*N.x - N.y*N.y);
+  N.x = 2.0 * uv.x - 1.0;
+  N.y = 2.0 * uv.y - 1.0;
+  N.z = sin(uv.x*PI);
   return N;
 }
 
@@ -37,9 +37,7 @@ vec3 ImportanceSampleGGX( vec2 Xi, float Roughness, vec3 N ) {
   H.x = SinTheta * cos( Phi );
   H.y = SinTheta * sin( Phi );
   H.z = CosTheta;
-  vec3 UpVector = vec3(0.0, 0.0, 1.0);
-  // for other mapping types, the original method:
-  // vec3 UpVector = abs(N.z) < 0.999 ? vec3(0.0,0.0,1.0) : vec3(1.0,0.0,0.0);
+  vec3 UpVector = abs(N.z) < 0.999 ? vec3(0.0,0.0,1.0) : vec3(1.0,0.0,0.0);
   vec3 TangentX = normalize( cross( UpVector, N ) );
   vec3 TangentY = cross( N, TangentX );
   // Tangent to world space
@@ -53,8 +51,7 @@ float randomNumber(int i, int numSamples) {
 }
 
 vec3 getSample(vec3 N) {
-  vec2 refl_uv = N.xy * vec2(0.6) + vec2(0.5);
-  return degamma(texture2D(reflection_map, refl_uv.xy).rgb);
+  return texture2D(reflection_map, envMapEquirect(N)).rgb;
 }
 
 // Unreal SIGGRAPH 2013
@@ -87,6 +84,5 @@ void main() {
   //vec2 debugColor = Hammersley((int)(P.x*1024.0), 1024);
   //vec3 color = texture2D(vdc_map, vec2(vUV.x, 0.5)).rgb;
   //vec3 color = vec3(Hammersley(int((N.x*0.5+0.5)*1024.0), 1024).rg, 0.0, 0.0);
-  vec3 color = gamma(PrefilterEnvMap(roughness_constant, N));
-  gl_FragColor = vec4(color, 1.0);
+  gl_FragColor = rgbToRgbd(gamma(PrefilterEnvMap(roughness_constant, N)));
 }

@@ -15,18 +15,12 @@ varying vec2 vUV;
 varying vec3 vP;
 varying mat3 vTBN;
 
+#pragma glslify: makeTBN = require(./normals/makeTBN)
+
 void main() {
     vUV = uv;
     vN = normalMatrix * normal;
-
-    vec3 N = normalize(normalMatrix * normal);
-    vec3 T = normalize(normalMatrix * tangent.xyz);
-    vec3 B = normalize(normalMatrix * cross(normal, tangent.xyz) * tangent.w);
-    vTBN = mat3(
-       T.x, T.y, T.z,
-       B.x, B.y, B.z,
-       N.x, N.y, N.z
-    );
+    vTBN = makeTBN(normalMatrix, normal, tangent);
 
     vec4 P4 = modelViewMatrix * vec4(position, 1.0);
     vP = P4.xyz;

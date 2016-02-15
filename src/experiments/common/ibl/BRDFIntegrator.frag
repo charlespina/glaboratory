@@ -21,13 +21,13 @@ vec2 Hammersley(int i, int numSamples) {
 vec3 ImportanceSampleGGX( vec2 Xi, float Roughness, vec3 N ) {
   float a = Roughness * Roughness;
   float Phi = 2.0 * PI * Xi.x;
-  float CosTheta = sqrt( (1.0 - Xi.y) / ( 1.0 + (a*a - 1.0) * Xi.y ) );
+  float CosTheta = sqrt( (1.0 - Xi.y) / ( 1.0 + (a*a - 1.0) * Xi.y + 0.00001) );
   float SinTheta = sqrt( 1.0 - CosTheta * CosTheta );
   vec3 H;
   H.x = SinTheta * cos( Phi );
   H.y = SinTheta * sin( Phi );
   H.z = CosTheta;
-  vec3 UpVector = abs(N.z) < 0.999 ? vec3(0.0,0.0,1.0) : vec3(1.0,0.0,0.0);
+  vec3 UpVector = N.z < 0.999 ? vec3(0.0,0.0,1.0) : vec3(1.0,0.0,0.0);
   vec3 TangentX = normalize( cross( UpVector, N ) );
   vec3 TangentY = cross( N, TangentX );
   // Tangent to world space
@@ -35,7 +35,7 @@ vec3 ImportanceSampleGGX( vec2 Xi, float Roughness, vec3 N ) {
 }
 
 float G_1(float k, float NdV) {
-  return NdV/((NdV)*(1.0-k)+k);
+  return NdV/((NdV)*(1.0-k)+k+0.00001);
 }
 
 float G_Smith(float roughness, float NdV, float NdL) {
@@ -71,7 +71,7 @@ vec2 IntegrateBRDF( float Roughness, float NoV )
     if( NoL > 0.0 )
     {
       float G = G_Smith( Roughness, NoV, NoL );
-      float G_Vis = G * VoH / (NoH * NoV);
+      float G_Vis = G * VoH / (NoH * NoV + 0.0001);
       float Fc = pow( 1.0 - VoH, 5.0 );
       A += (1.0 - Fc) * G_Vis;
       B += Fc * G_Vis;

@@ -2,10 +2,11 @@ import Experiment from '../../core/Experiment';
 import Parameter from '../../core/Parameter';
 import ShaderParameter from '../../core/ShaderParameter';
 import THREE from 'three';
-import envMap from '../HDR/textures/Newport_Loft_Ref.hdr';
+import iblMapUrl from '../HDR/textures/Newport_Loft_Ref.hdr';
 import { generateImageBasedLight } from '../common/ibl/ImageBasedLightGenerator';
 import PBRFrag from '../common/ibl/PhysicallyBased.frag';
-import PBRVert from '../common/ibl/PhysicallyBased.vert';
+import PBRVert from '../common/StandardRawTBN.vert';
+import TrackballControls from '../../lib/TrackballControls';
 
 class PBRIBL extends Experiment {
   constructor() {
@@ -15,7 +16,7 @@ class PBRIBL extends Experiment {
     this.uniforms = {
       base_color_constant: {
         type: 'c',
-        value: new THREE.Color(0xCC00CC),
+        value: new THREE.Color(0x006AA4),
       },
       roughness_constant: {
         type: 'f',
@@ -53,21 +54,28 @@ class PBRIBL extends Experiment {
         type: 't',
         value: null,
       },
-      env_map: {
+      ibl_map: {
         type: 't',
         value: null,
+      },
+      ibl_exposure: {
+        type: 'f',
+        value: 1.0,
+        min: 0.0,
+        max: 3.0,
       },
     };
   }
 
   setup(context) {
-    generateImageBasedLight(context, envMap).then(({ ibl, brdf })=> {
-      this.uniforms.env_map.value = ibl;
-      this.uniforms.env_map.needsUpdate = true;
+    generateImageBasedLight(context, iblMapUrl).then(({ ibl, brdf })=> {
+      this.uniforms.ibl_map.value = ibl;
+      this.uniforms.ibl_map.needsUpdate = true;
 
       this.uniforms.brdf_map.value = brdf;
       this.uniforms.brdf_map.needsUpdate = true;
     });
+
 
     this.addParameters(ShaderParameter.fromUniformHash(this.uniforms));
 
@@ -79,6 +87,16 @@ class PBRIBL extends Experiment {
     });
     this.mesh = new THREE.Mesh(geo, material);
     context.scene.add(this.mesh);
+    const controls = new TrackballControls( context.camera, context.domElement);
+    controls.rotateSpeed = 1.0;
+    controls.zoomSpeed = 1.2;
+    controls.panSpeed = 0.8;
+    controls.noZoom = false;
+    controls.noPan = false;
+    controls.staticMoving = true;
+    controls.dynamicDampingFactor = 0.3;
+    controls.keys = [ 65, 83, 68 ];
+    //controls.addEventListener('change', ()=>context.render());
   }
 
   update(dt) {

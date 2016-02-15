@@ -1,7 +1,9 @@
 #pragma glslify: safeDot = require(../math/safeDot)
 #pragma glslify: Material = require(./Material)
 
+#ifndef PI
 #define PI 3.14159
+#endif
 
 // Unreal GGX implementation (Unreal SIGGRAPH 2013)
 // http://blog.selfshadow.com/publications/s2013-shading-course/karis/s2013_pbs_epic_notes_v2.pdf
@@ -47,7 +49,7 @@ vec3 shade(vec3 L, vec3 V, vec3 N, Material material) {
 
   // metals don't have a diffuse contribution, so turn off the diffuse color
   // when the material is metallic
-  vec3 diffuse_color = material.base_color * (1.0 - material.metalicity);
+  vec3 diffuse_color = material.base_color * (1.0 - material.metalicity) / PI;
 
   // use reflectance to calculate energy conservation
   // diffuse_color *= vec3(1.0, 1.0, 1.0) - F0;

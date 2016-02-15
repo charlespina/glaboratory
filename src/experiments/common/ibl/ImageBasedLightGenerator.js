@@ -9,8 +9,8 @@ import loadHdrTexture from '../hdr/loadHdrTexture';
 
 class ImageBasedLightGenerator {
   constructor(renderSystem, sourceTexture) {
-    this.resolution = 256;
-    this.numLevels = 8; // corresponds to 2^8 = 256
+    this.resolution = 1024;
+    this.numLevels = 10; // corresponds to 2^8 = 256
     this.brdfResolution = 256; // lower resolution is fine for brdf
     this.vdcResolution = 1024; // corresponds to number of samples in brdf integrator
     this.renderSystem = renderSystem;
@@ -52,12 +52,8 @@ class ImageBasedLightGenerator {
         }
       });
     });
-  }
 
-  generate(tex) {
-    this.uniforms.reflection_map.value = tex;
-    this.uniforms.reflection_map.value.needsUpdate = true;
-    const compute = new Compute(this.renderSystem,
+    this.compute = new Compute(this.renderSystem,
       StandardRawVert,
       EnvironmentBlurFrag,
       {
@@ -65,8 +61,13 @@ class ImageBasedLightGenerator {
         uniforms: this.uniforms,
       }
     );
+  }
 
-    const baseTexture = compute.run();
+  generate(tex) {
+    this.uniforms.reflection_map.value = tex;
+    this.uniforms.reflection_map.value.needsUpdate = true;
+
+    const baseTexture = this.compute.run();
     const baseImage = RenderUtil.createImage(this.renderSystem, baseTexture, this.resolution, this.resolution);
     const result = new THREE.CanvasTexture(baseImage);
     result.minFilter = THREE.LinearMipMapLinearFilter;
@@ -80,7 +81,7 @@ class ImageBasedLightGenerator {
       const mipLevel = RenderUtil.createRenderTarget(res, res);
       this.uniforms.roughness_constant.value = i / (this.numLevels - 1);
       this.uniforms.roughness_constant.needsUpdate = true;
-      compute.renderToTexture(mipLevel);
+      this.compute.renderToTexture(mipLevel);
       const image = RenderUtil.createImage(this.renderSystem, mipLevel, res, res);
       result.mipmaps[i] = image;
     }
