@@ -8,11 +8,12 @@ import PBRFrag from '../common/ibl/PhysicallyBased.frag';
 import PBRVert from '../common/StandardRawTBN.vert';
 import BGFrag from '../common/Texture.frag';
 import BGVert from '../common/StandardRaw.vert';
+import thumbnail from './thumbnail.png';
 
 class PBRIBL extends Experiment {
   constructor() {
     super("PBR with IBL");
-    this.thumbnail = "images/test.png";
+    this.thumbnail = thumbnail;
     this.description = "Physically based rendering, with an image based light.";
     this.uniforms = {
       base_color_constant: {
@@ -112,7 +113,7 @@ class PBRIBL extends Experiment {
       },
       texture_lod: {
         type: 'f',
-        value: 0.0,
+        value: 1.0,
         min: 0.0,
         max: 9.0
       },
@@ -124,7 +125,7 @@ class PBRIBL extends Experiment {
       },
       texture_scale: {
         type: 'f',
-        value: 1.0,
+        value: 1.9,
         min: 0.01,
         max: 10.0,
       }

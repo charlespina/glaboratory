@@ -9,6 +9,7 @@ import vertShader from '../common/StandardTBN.vert';
 import loadHdrTexture from '../common/hdr/loadHdrTexture';
 import { EventEmitter } from 'events';
 import THREE from 'three';
+import thumbnail from './thumbnail.png';
 
 // glsl-rgbe2rgb
 // glsl-envmap-cube
@@ -18,7 +19,7 @@ import THREE from 'three';
 class HDR extends Experiment {
   constructor() {
     super("HDR");
-    this.thumbnail = "images/test.png";
+    this.thumbnail = thumbnail;
     this.description = "High dynamic range environment mapping";
     this.uniforms = {
       envMap: {
