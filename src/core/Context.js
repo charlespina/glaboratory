@@ -49,8 +49,10 @@ class Context extends EventEmitter {
   }
 
   resize() {
-    this.renderer.setSize(this.getWidth(), this.getHeight());
-    this.camera.aspect = this.getWidth()/this.getHeight();
+    this.width = this.getWidth();
+    this.height = this.getHeight();
+    this.renderer.setSize(this.width, this.height);
+    this.camera.aspect = this.width/this.height;
     this.camera.updateProjectionMatrix();
     this.emit('resize', this);
   }
