@@ -4,11 +4,12 @@ import GridVert from '../common/StandardTBN.vert';
 import Parameter from '../../core/Parameter';
 import ShaderParameter from '../../core/ShaderParameter';
 import THREE from 'three';
+import thumbnail from './grid.png';
 
 class Grid extends Experiment {
   constructor() {
     super("Grid");
-    this.thumbnail = "images/test.png";
+    this.thumbnail = thumbnail;
     this.description = "A grid";
     this.uniforms = {
       resolution: {

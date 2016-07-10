@@ -25,6 +25,7 @@ var ExperimentDetail = require('./components/ExperimentDetail.react');
   require('./experiments/HDR/index'),
   require('./experiments/PBR-ImageBasedLighting/index'),
   require('./experiments/Grid/index'),
+  require('./experiments/Hologram/index'),
 ].map(ExperimentStore.registerExperiment.bind(ExperimentStore));
 
 var App = React.createClass( {
