@@ -14,6 +14,7 @@
     "express": "~4.10.4",
     "extend": "^2.0.0",
     "flux": "^2.1.1",
+    "glsl-fast-gaussian-blur": "^1.0.2",
     "glsl-noise": "0.0.0",
     "glslify": "^5.0.2",
     "glslify-loader": "https://github.com/charlespina/glslify-loader.git",
