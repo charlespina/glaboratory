@@ -11,7 +11,7 @@ class ImageBasedLightGenerator {
   constructor(renderSystem, sourceTexture) {
     this.resolution = 1024;
     this.numLevels = 10; // corresponds to 2^8 = 256
-    this.brdfResolution = 256; // lower resolution is fine for brdf
+    this.brdfResolution = 512; // lower resolution is fine for brdf
     this.vdcResolution = 1024; // corresponds to number of samples in brdf integrator
     this.renderSystem = renderSystem;
 
@@ -70,8 +70,12 @@ class ImageBasedLightGenerator {
     const baseTexture = this.compute.run();
     const baseImage = RenderUtil.createImage(this.renderSystem, baseTexture, this.resolution, this.resolution);
     const result = new THREE.CanvasTexture(baseImage);
-    result.wrapS = THREE.RepeatWrapping;
-    result.wrapT = THREE.RepeatWrapping;
+    //result.wrapS = THREE.ClampToEdgeWrapping;
+    //result.wrapT = THREE.ClampToEdgeWrapping;
+    // result.wrapS = THREE.RepeatWrapping;
+    // result.wrapT = THREE.RepeatWrapping;
+    result.wrapS = THREE.MirroredRepeatWrapping;
+    result.wrapT = THREE.MirroredRepeatWrapping;
     result.minFilter = THREE.LinearMipMapLinearFilter;
     result.magFilter = THREE.NearestFilter;
     result.format = THREE.RGBAFormat;

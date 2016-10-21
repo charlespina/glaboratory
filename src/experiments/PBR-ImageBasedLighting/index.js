@@ -3,6 +3,7 @@ import Parameter from '../../core/Parameter';
 import ShaderParameter from '../../core/ShaderParameter';
 import THREE from 'three';
 import iblMapUrl from '../HDR/textures/Newport_Loft_Ref.hdr';
+//import iblMapUrl from '../HDR/textures/Default.hdr';
 import { generateImageBasedLight } from '../common/ibl/ImageBasedLightGenerator';
 import PBRFrag from '../common/ibl/PhysicallyBased.frag';
 import PBRVert from '../common/StandardRawTBN.vert';
@@ -18,7 +19,7 @@ class PBRIBL extends Experiment {
     this.uniforms = {
       base_color_constant: {
         type: 'c',
-        value: new THREE.Color(0x006AA4),
+        value: new THREE.Color(0xFFFFFF),
       },
       roughness_constant: {
         type: 'f',
@@ -26,7 +27,7 @@ class PBRIBL extends Experiment {
       },
       metalicity: {
         type: 'f',
-        value: 0.0,
+        value: 1.0,
       },
       specular_level: {
         type: 'f',

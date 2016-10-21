@@ -15,6 +15,8 @@ export default class RenderUtil {
         minFilter: THREE.LinearFilter,
         magFilter: THREE.NearestFilter,
         format: THREE.RGBAFormat,
+        wrapS: THREE.MirroredRepeatWrapping,
+        wrapT: THREE.MirroredRepeatWrapping,
       }
     );
   }

@@ -20,18 +20,6 @@ varying vec3 vP;
 #pragma glslify: degamma = require(../color/degamma)
 #pragma glslify: rgbToRgbd = require(../color/rgbToRgbd)
 
-/*vec3 uvToNormal(vec2 uv) {
-  // create hemisphere from uv's, to use for ray testing
-  vec3 N;
-
-  vec2 uv2 = 2.0 * uv - vec2(1.0);
-
-  N.x = sin(uv2.x*PI); //uv2.x;
-  N.y = uv2.y * 0.59; // sin(uv2.y*PI); //1.0; // sin(uv.x*PI);
-  N.z = cos(uv2.x*PI); //2.0 * uv.y - 1.0;
-  return N;
-}*/
-
 vec3 ImportanceSampleGGX( vec2 Xi, float Roughness, vec3 N ) {
   float a = Roughness * Roughness;
   float Phi = 2.0 * PI * Xi.x;
@@ -88,5 +76,10 @@ void main() {
   //vec2 debugColor = Hammersley((int)(P.x*1024.0), 1024);
   //vec3 color = texture2D(vdc_map, vec2(vUV.x, 0.5)).rgb;
   //vec3 color = vec3(Hammersley(int((N.x*0.5+0.5)*1024.0), 1024).rg, 0.0, 0.0);
+
+  // debug normals
+  // gl_FragColor = vec4(0.5 * N + vec3(0.5), 1.0);
+
+  // final out
   gl_FragColor = rgbToRgbd((PrefilterEnvMap(roughness_constant, N)));
 }

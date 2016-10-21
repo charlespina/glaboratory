@@ -7,12 +7,12 @@ vec3 envMapEquirectInverse(vec2 uv) {
 
   vec2 uvRange = uv;
 
-  float theta = uvRange.x*2.0*PI - PI;
-  N.x = -sin(theta);
-  N.z = cos(theta);
-
+  float theta = uvRange.x*2.0*PI;
   float phi = uvRange.y * PI;
-  N.y = -cos(phi)*0.59;
+
+  N.x = cos(theta) * sin(phi);
+  N.z = sin(theta) * sin(phi);
+  N.y = -cos(phi);
   return N;
 }
 
