@@ -3,13 +3,13 @@ import ShaderParameter from '../../core/ShaderParameter';
 import Trigger from '../../core/Trigger';
 import Parameter from '../../core/Parameter';
 import ParameterGroup from '../../core/ParameterGroup';
-import TextureUtils from './TextureUtils';
-import BrushTip from './sim-brushes/BrushTip';
+import TextureUtils from '../common/TextureUtils';
+import BrushTip from '../common/painting/BrushTip';
 import ReactionDiffusionBrush from './sim-brushes/ReactionDiffusionBrush';
-import PaintBrush from './sim-brushes/PaintBrush';
+import PaintBrush from '../common/painting/PaintBrush';
 import THREE from 'three';
 var DisplayFrag = require('./shaders/Display.frag');
-var SharedVert = require('./shaders/Shared.vert');
+var SharedVert = require('../common/painting/shaders/Shared.vert');
 
 var SIM_RESOLUTION = 512;
 var IMAGE_RESOLUTION = 1024;

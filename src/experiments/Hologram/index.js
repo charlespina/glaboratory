@@ -3,7 +3,6 @@ import CompositeAddFrag from './shaders/CompositeAdd.frag';
 import GaussianBlurHFrag from './shaders/GaussianBlurH.frag';
 import GaussianBlurVFrag from './shaders/GaussianBlurV.frag';
 import HighPassFrag from './shaders/HighPass.frag';
-import CopyPassFrag from './shaders/CopyPass.frag';
 import StandardVert from '../common/Standard.vert';
 import HologramFrag from './shaders/Hologram.frag';
 import HologramVert from '../common/StandardTBN.vert';
@@ -13,105 +12,9 @@ import OBJLoader from '../../lib/OBJLoader';
 import modelUrl from 'file!./geometry/KingKong.obj';
 import THREE from 'three';
 import thumbnail from './hologram.png';
-
-/*
-import '../../lib/postprocessing/EffectComposer';
-import '../../lib/postprocessing/RenderPass';
-import '../../lib/postprocessing/ShaderPass';
-*/
-
-class RenderPipeline {
-  constructor(renderer) {
-    this.renderer = renderer;
-    const {width, height} = this.renderer.getSize();
-    this.readBuffer = new THREE.WebGLRenderTarget(width, height, {
-      minFilter: THREE.LinearFilter,
-      maxFilter: THREE.LinearFilter,
-      format: THREE.RGBAFormat,
-      stencilBuffer: false,
-    });
-    this.writeBuffer = this.readBuffer.clone();
-    this.passes = [];
-    this.copyPass = new ShaderPass({
-      fragmentShader: CopyPassFrag,
-    });
-  }
-
-  copy(dest) {
-    const tmpWrite = this.writeBuffer;
-    this.writeBuffer = dest;
-    this.copyPass.render(this, 0);
-    this.writeBuffer = tmpWrite;
-  }
-
-  addPass(pass) {
-    this.passes.push(pass);
-  }
-
-  resize(w, h) {
-    if (this.width == w && this.height == h) return;
-
-    this.width = w;
-    this.height = h;
-    this.readBuffer.setSize(this.width, this.height);
-    this.writeBuffer.setSize(this.width, this.height);
-    this.passes.forEach((pass)=> {
-      pass.setSize(this.width, this.height);
-    });
-  }
-
-  swapBuffers() {
-    const tmp = this.readBuffer;
-    this.readBuffer = this.writeBuffer;
-    this.writeBuffer = tmp;
-  }
-
-  render(dt) {
-    this.passes.forEach((pass) => {
-      pass.render(this, dt);
-      this.swapBuffers();
-    });
-  }
-}
-
-class RenderPass {
-  setSize(w, h) {}
-  render(pipeline, dt) {
-    throw new Error("Not yet implemented");
-  }
-}
-
-class SceneRenderPass extends RenderPass {
-  constructor(scene, camera) {
-    super();
-    this.scene = scene;
-    this.camera = camera;
-  }
-
-  render(pipeline, dt) {
-    pipeline.renderer.render(this.scene, this.camera, pipeline.writeBuffer);
-  }
-}
-
-class ShaderPass extends RenderPass {
-  constructor({vertexShader=StandardVert, fragmentShader, uniforms, renderToScreen=false, textureName="texture"}) {
-    super();
-    this.uniforms = uniforms ? uniforms : { texture: { type: 't', value: null }};
-    this.material = new THREE.ShaderMaterial({vertexShader, fragmentShader, uniforms: this.uniforms});
-    this.camera = new THREE.OrthographicCamera( - 1, 1, 1, - 1, 0, 1 );
-    this.scene = new THREE.Scene();
-    this.quad = new THREE.Mesh(new THREE.PlaneBufferGeometry( 2, 2 ), this.material);
-    this.renderToScreen = renderToScreen;
-    this.scene.add(this.quad);
-    this.textureName = textureName;
-  }
-
-  render(pipeline, dt) {
-    this.material.uniforms[this.textureName].value = pipeline.readBuffer;
-    this.material.uniforms[this.textureName].needsUpdate = true;
-    pipeline.renderer.render(this.scene, this.camera, this.renderToScreen ? null : pipeline.writeBuffer);
-  }
-}
+import RenderPipeline from '../common/render-pipeline/RenderPipeline';
+import ShaderPass from '../common/render-pipeline/ShaderPass';
+import SceneRenderPass from '../common/render-pipeline/SceneRenderPass';
 
 class HighPass extends ShaderPass {
   constructor(thresholdValue=0.5, ...args) {

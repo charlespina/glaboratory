@@ -1,12 +1,12 @@
-import SimBrush from './SimBrush';
-import TextureUtils from '../TextureUtils';
+import SimBrush from '../../common/painting/SimBrush';
+import TextureUtils from '../../common/TextureUtils';
 import ShaderParameter from '../../../core/ShaderParameter';
 import Parameter from '../../../core/Parameter';
 
 import THREE from 'three';
 
 const ComputeFrag = require('../shaders/ReactionDiffusion.frag');
-const SharedVert = require('../shaders/Shared.vert')
+const SharedVert = require('../../common/painting/shaders/Shared.vert')
 
 export default class ReactionDiffusionBrush extends SimBrush {
   constructor(context, resolution) {

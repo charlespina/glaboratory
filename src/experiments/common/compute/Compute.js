@@ -7,7 +7,7 @@ import RenderUtil from './RenderUtil';
  * generate textures with the output of a shader program.
  */
 export default class Compute {
-  constructor(renderSystem, vertexShader, fragmentShader, { uniforms = {}, defines = {}, resolution = 512 }) {
+  constructor(renderSystem, vertexShader, fragmentShader, { uniforms = {}, defines = {}, resolution = 512, createRenderTarget = false }) {
     this.renderSystem = renderSystem;
     this.resolution = resolution;
     this.scene = new THREE.Scene();
@@ -21,6 +21,7 @@ export default class Compute {
       uniforms,
       defines,
     });
+    if (createRenderTarget) this.output = RenderUtil.createRenderTarget(this.resolution, this.resolution);
     this.quad = new THREE.Mesh(plane, material);
     this.scene.add(this.quad);
   }

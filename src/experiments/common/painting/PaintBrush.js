@@ -5,8 +5,8 @@ import Parameter from '../../../core/Parameter';
 
 import THREE from 'three';
 
-const PaintBrushFrag = require('../shaders/PaintBrush.frag');
-const SharedVert = require('../shaders/Shared.vert');
+const PaintBrushFrag = require('./shaders/PaintBrush.frag');
+const SharedVert = require('./shaders/Shared.vert');
 
 export default class PaintBrush extends SimBrush {
   constructor(context, resolution) {

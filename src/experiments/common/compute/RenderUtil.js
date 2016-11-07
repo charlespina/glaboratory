@@ -21,6 +21,15 @@ export default class RenderUtil {
     );
   }
 
+  static fillRenderTargets(renderSystem, RTTs, clearColor, alpha) {
+    RTTs.forEach((RTT)=> {
+      var previousClearColor = renderSystem.renderer.getClearColor();
+      renderSystem.renderer.setClearColor(clearColor, alpha);
+      renderSystem.renderer.clearTarget(RTT, true);
+      renderSystem.renderer.setClearColor(previousClearColor);
+    });
+  }
+
   /**
    * @param {ThreeJsRenderSystem} renderSystem
    * @param {THREE.WebGLRenderTarget} texture - the texture which will be used to

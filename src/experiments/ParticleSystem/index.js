@@ -5,7 +5,7 @@ import simulationVertShader from './shaders/Simulation.vert';
 import simulationFragShader from './shaders/Simulation.frag';
 import displayVertShader from './shaders/Display.vert';
 import displayFragShader from './shaders/Display.frag';
-import BrushTip from '../ReactionDiffusion/sim-brushes/BrushTip';
+import BrushTip from '../common/painting/BrushTip';
 
 class Simulation {
   constructor(context, dim, numParticles) {

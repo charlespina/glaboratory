@@ -4,8 +4,8 @@ import Parameter from '../../../core/Parameter';
 
 import THREE from 'three';
 
-const BrushFrag = require('../shaders/BrushTip.frag');
-const SharedVert = require('../shaders/Shared.vert')
+const BrushFrag = require('./shaders/BrushTip.frag');
+const SharedVert = require('./shaders/Shared.vert')
 
 const SYMMETRY_MODES = {
   NONE: {name:'No Symmetry', value:0},
