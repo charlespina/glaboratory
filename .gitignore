@@ -2,6 +2,7 @@
 /public/js/*
 /public/css/*
 /public/index.html
+/public
 .DS_Store
 .sass-cache
 .*.swp
