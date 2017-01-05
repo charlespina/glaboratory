@@ -49,20 +49,24 @@ float getBrushFalloff(float intensity) {
 }
 
 void main() {
-
-
   vec2 P = vUV.xy - vec2(0.5, 0.5);
 
   float intensity, value;
   if (brush_connected == 1) {
-    intensity = getDistanceFromBrushLine(brush_position, brush_position_previous, P);
-    float intensity_prev = getDistanceFromBrush(brush_position_previous, P);
-    value = getBrushFalloff(intensity); // - 0.5 *getBrushFalloff(intensity_prev);
+    float normalized_brush_width = brush_width/float(resolution);
+    if (distance(brush_position, brush_position_previous) > 1.0 * normalized_brush_width) {
+      float intensity_cur = getDistanceFromBrush(brush_position, P);
+      float intensity_prev = getDistanceFromBrush(brush_position_previous, P);
+      intensity = getDistanceFromBrushLine(brush_position, brush_position_previous, P);
+      value = getBrushFalloff(intensity) - 0.33 * (getBrushFalloff(intensity_cur) + getBrushFalloff(intensity_prev));
+    } else {
+      intensity = getDistanceFromBrush(brush_position, P);
+      value = getBrushFalloff(intensity);
+    }
   } else {
     intensity = getDistanceFromBrush(brush_position, P);
     value = getBrushFalloff(intensity);
   }
-
 
   gl_FragColor = vec4(brush_active == 1 ? value : 0.0, 0.0, 0.0, 0.0);
 }

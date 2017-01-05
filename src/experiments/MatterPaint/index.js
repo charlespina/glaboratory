@@ -24,7 +24,7 @@ class MatterPaint extends Experiment {
     this.addParameter(new Parameter("Test param", { type: 'i', value: 1 }));
     this.addParameter(new Parameter("Test paramaamamama", { type: 'f', value: 2 }));
     */
-    this.thumbnail = "../HelloWorld/images/test.png";
+    this.thumbnail = "images/test.png";
     this.description = "Painting";
   }
 
@@ -174,11 +174,13 @@ class MatterPaint extends Experiment {
   onMouseDown(e) {
     e.preventDefault();
     this.mouse.pressed = true;
+    this.brushTip.beginStroke();
   }
 
   onMouseUp(e) {
     e.preventDefault();
     this.mouse.pressed = false;
+    this.brushTip.endStroke();
   }
 
   onMouseMove(e) {

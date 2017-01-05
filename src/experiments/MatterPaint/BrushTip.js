@@ -14,7 +14,7 @@ export default class BrushTip {
       resolution: { type: 'i', value: this.resolution },
 
       /* controls whether drawing is enabled */
-      brush_active: { type: 'i', value: 1 },
+      brush_active: { type: 'i', value: 0 },
 
       /* controls whether the brush points are connected by a line segment */
       brush_connected: { type: 'i', value: this.useLineSegments ? 1 : 0 },
@@ -36,9 +36,20 @@ export default class BrushTip {
     this.compute.run();
   }
 
+  beginStroke() {
+    this.strokeHasHistory = false;
+    this.uniforms.brush_active.value = 1;
+    this.uniforms.brush_active.needsUpdate = true;
+  }
+
+  endStroke() {
+    this.uniforms.brush_active.value = 0;
+    this.uniforms.brush_active.needsUpdate = true;
+  }
+
   setBrushPosition(pos) {
     // if no line segment, just set previous to current
-    if (this.useLineSegments && this.hasDrawnOnce) {
+    if (this.useLineSegments && this.strokeHasHistory) {
       this.uniforms.brush_position_previous.value.copy(this.uniforms.brush_position.value);
     } else {
       this.uniforms.brush_position_previous.value.copy(pos);
@@ -48,7 +59,7 @@ export default class BrushTip {
 
     this.uniforms.brush_position_previous.needsUpdate = true;
     this.uniforms.brush_position.needsUpdate = true;
-    this.hasDrawnOnce = true;
+    this.strokeHasHistory = true;
   }
 
   get output() {
