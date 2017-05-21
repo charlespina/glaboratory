@@ -89,7 +89,7 @@ var ContentPanel = React.createClass({
     }
 
     return (
-      <div className="twelve wide column content-panel">
+      <div className="content-panel">
         <WebGLView key="glview" ref="view" />
         {legend}
       </div>

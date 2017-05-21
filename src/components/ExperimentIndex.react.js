@@ -25,13 +25,13 @@ var ExperimentIndex = React.createClass({
     });
 
     return (
-      <div>
+      <div className="experiment-index">
         <div className="topbar">
           <div className="ui breadcrumb">
             <div className="active section">Experiments</div>
           </div>
         </div>
-        <div className="experiment-index">
+        <div className="content">
           <div className="ui five cards">
             {experimentList}
           </div>

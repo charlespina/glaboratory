@@ -33,7 +33,7 @@ var ExperimentDetail = React.createClass({
   render: function() {
     var expName = this.props.params.experimentName.replace(/\+/g, ' ');
     return (
-      <div className="experiment-viewer">
+      <div className="experiment-detail">
         <div className="topbar">
           <div className="ui breadcrumb">
             <div className="section">
@@ -43,10 +43,8 @@ var ExperimentDetail = React.createClass({
             <div className="active section">{expName}</div>
           </div>
         </div>
-        <div className="ui padded equal height grid content experiment-viewer-grid">
-          <ContentPanel />
-          <Sidebar />
-        </div>
+        <ContentPanel />
+        <Sidebar />
       </div>
     );
   }

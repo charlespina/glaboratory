@@ -178,7 +178,7 @@ var Sidebar = React.createClass({
     });
 
     return (
-      <div className="four wide column sidebar">
+      <div className="sidebar">
         {inputs}
       </div>
     );

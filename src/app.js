@@ -32,7 +32,7 @@ var ExperimentDetail = require('./components/ExperimentDetail.react');
 var App = React.createClass( {
   render: function() {
     return (
-      <div id="site" className="container-fluid">
+      <div id="site">
         {this.props.children}
       </div>
     );
