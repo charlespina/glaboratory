@@ -51,7 +51,7 @@ var uniforms = {
     type: 'f',
     min: 0,
     max: 1,
-    value: 0
+    value: 1
   },
   "specular_level": {
     type: 'f',
@@ -65,7 +65,7 @@ var uniforms = {
   },
   "base_color_constant": {
     type: 'c',
-    value: (new THREE.Color(0x49389B))
+    value: (new THREE.Color(0xFFFFFF))
   },
   "light_intensity": {
     type: 'f',
@@ -82,6 +82,12 @@ var uniforms = {
     hidden: true,
     value: (new THREE.Color(0xFFFFFF))
   },
+  "cloudiness": {
+    type: 'f',
+    value: 0,
+    min: 0,
+    max: 1
+  }
 };
 
 class PBR extends Experiment {
@@ -112,7 +118,7 @@ class PBR extends Experiment {
   }
 
   update(dt) {
-    this.mesh.rotation.y += 0.010;
+    // this.mesh.rotation.y += 0.010;
   }
 }
 
