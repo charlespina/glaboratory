@@ -3,7 +3,7 @@ import TextureUtils from '../../common/TextureUtils';
 import ShaderParameter from '../../../core/ShaderParameter';
 import Parameter from '../../../core/Parameter';
 
-import THREE from 'three';
+import * as THREE from 'three';
 
 const ComputeFrag = require('../shaders/Fluid.frag');
 const SharedVert = require('../../common/painting/shaders/Shared.vert')
@@ -14,15 +14,15 @@ class FluidBrush extends SimBrush {
     this.name = 'Fluid Brush';
   }
 
-  get uniforms() : object {
+  get uniforms() {
     return this._uniforms;
   }
 
-  get vertexShader() : string {
+  get vertexShader() {
     return SharedVert;
   }
 
-  get fragmentShader() : string {
+  get fragmentShader() {
     return ComputeFrag;
   }
 
@@ -105,7 +105,7 @@ class FluidBrush extends SimBrush {
     super.init(context, resolution);
 
     // assign data texture to appropriate uniform
-    this.setUniform(this._uniforms.data_texture, this.buffer[1]);
+    this.setUniform(this._uniforms.data_texture, this.buffer[1].texture);
     this.initParams();
   }
 
@@ -140,7 +140,7 @@ class FluidBrush extends SimBrush {
 
       TextureUtils.swapBuffers(this.buffer);
       this.output = this.buffer[0];
-      this.setUniform(this._uniforms.data_texture, this.buffer[1]);
+      this.setUniform(this._uniforms.data_texture, this.buffer[1].texture);
     }
   }
 

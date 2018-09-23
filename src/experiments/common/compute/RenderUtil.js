@@ -1,4 +1,4 @@
-import THREE from 'three';
+import * as THREE from 'three';
 
 /**
  * A utility class, housing a handful of useful texture and image functions.
@@ -39,7 +39,7 @@ export default class RenderUtil {
    * @return {ImageData} - an ImageData object, which is compatible with canvas, and WebGL
    */
   static createImage(renderSystem, texture, width, height) {
-    const webglProperties = new THREE.WebGLProperties();
+    const webglProperties = renderSystem.renderer.properties;
     const renderTargetProperties = webglProperties.get(texture);
     // Read the contents of the framebuffer
     const data = new Uint8Array(width * height * 4);

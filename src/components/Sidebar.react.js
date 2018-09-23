@@ -1,12 +1,16 @@
-var React = require('react');
-var ReactDOM = require('react-dom');
-var SliderInput = require('./SliderInput.react');
-var ColorPickerInput = require('./ColorPickerInput.react');
+import React from 'react';
+import ReactDOM from 'react-dom';
+import SliderInput from './SliderInput.react';
+import ColorPickerInput from './ColorPickerInput.react';
 import ExperimentStore from '../stores/ExperimentStore';
-var classnames = require('classnames');
+import classnames from 'classnames';
 
-var GenericInput = React.createClass({
-  toggleAccordion: function() {
+class GenericInput extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  toggleAccordion() {
     var shouldReveal = !this.props.param.active;
     this.props.param.active = shouldReveal;
 
@@ -19,9 +23,9 @@ var GenericInput = React.createClass({
       $(ReactDOM.findDOMNode(this.refs.accordionContent)).transition(transition);
     }
     this.forceUpdate(); // reveal before animation
-  },
+  }
 
-  onDropdownChange: function(e) {
+  onDropdownChange(e) {
     var name = e.target.value;
     var choice;
     this.props.param.choices.forEach(function(c) {
@@ -33,9 +37,9 @@ var GenericInput = React.createClass({
       this.props.param.setValue(choice);
 
     e.target.blur();
-  },
+  }
 
-  render: function() {
+  render() {
     var param = this.props.param;
     var children;
     if (param.groupedType || param.type == 'group') {
@@ -101,16 +105,21 @@ var GenericInput = React.createClass({
       return (
         <select className='ui mini fluid dropdown'
           defaultValue={param.value.name}
-          onChange={this.onDropdownChange}>
+          onChange={this.onDropdownChange.bind(this)}>
           {choices}
         </select>
       );
     }
   }
-});
+};
 
-var Sidebar = React.createClass({
-  getState: function() {
+class Sidebar extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = this.getState();
+  }
+
+  getState() {
     if (ExperimentStore.currentExperiment) {
       return {
         parameters: ExperimentStore.currentExperiment.parameters
@@ -120,25 +129,21 @@ var Sidebar = React.createClass({
         parameters: []
       }
     }
-  },
+  }
 
-  updateState: function() {
+  updateState() {
     this.setState(this.getState());
-  },
+  }
 
-  getInitialState: function() {
-    return this.getState();
-  },
+  componentDidMount() {
+    ExperimentStore.addChangeListener(this.updateState.bind(this));
+  }
 
-  componentDidMount: function() {
-    ExperimentStore.addChangeListener(this.updateState);
-  },
-
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     ExperimentStore.removeChangeListener(this.updateState);
-  },
+  }
 
-  coalesceGroups: function() {
+  coalesceGroups() {
     if (!this.state.parameters)
       return [];
 
@@ -167,9 +172,9 @@ var Sidebar = React.createClass({
       }
     });
     return coalesced;
-  },
+  }
 
-  render: function() {
+  render() {
     var inGroup = false;
     var coalescedGroups = [];
 
@@ -183,6 +188,6 @@ var Sidebar = React.createClass({
       </div>
     );
   }
-});
+};
 
-module.exports = Sidebar;
+export default Sidebar;

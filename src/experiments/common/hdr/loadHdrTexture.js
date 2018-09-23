@@ -1,6 +1,6 @@
 import request from 'superagent';
 import parseHdr from './parseHdr';
-import THREE from 'three';
+import * as THREE from 'three';
 
 export default function loadHdrTexture(url) {
   request.parse['application/octet-stream'] = (obj) => {
@@ -10,7 +10,7 @@ export default function loadHdrTexture(url) {
   const promise = new Promise((resolve, reject) => {
     request.get(url)
     .on('request', function () {
-      this.xhr.responseType = 'arraybuffer'; 
+      this.xhr.responseType = 'arraybuffer';
     })
     .end((err, res) => {
       if (err) {

@@ -1,34 +1,37 @@
 var path = require("path");
 
 module.exports = {
+  mode: 'development',
   context: path.resolve(__dirname, "src"),
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.scss$/,
-        loaders: ["style", "css", "sass"],
+        use: [{ loader: "style-loader" }, { loader: "css-loader" }, { loader: "sass-loader" }],
       },
       {
         test: /\.html$/,
-        loader: "file?name=[name].[ext]",
+        use: "file-loader?name=[name].[ext]",
       },
       {
         test: /\.js$/,
         exclude: /node_modules|src\/lib\/three.js/,
-        loaders: ['babel-loader?presets[]=react,presets[]=es2015'],
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env', '@babel/preset-react'],
+          },
+        },
       },
       {
         test: /\.(jpg|png|gif|hdr)$/,
-        loader: "file",
+        use: "file-loader",
       },
       {
         test: /\.(frag|vert|glsl)$/,
-        loaders: [ "raw", "glslify" ]
+        use: [ "raw-loader", "glslify-loader" ],
       }
     ],
-    sassLoader: {
-      indentedSyntax: true
-    },
   },
   entry: {
     app: [
@@ -39,5 +42,11 @@ module.exports = {
   output: {
     filename: "./js/app.js",
     path: __dirname + "/public"
+  },
+  devtool: 'inline-source-map',
+  devServer: {
+    publicPath: '/',
+    historyApiFallback: true, // so reloads will try to access index.html on failure, to allow react to respond
+    contentBase: path.join(__dirname, "public"),
   },
 };

@@ -1,4 +1,4 @@
-import THREE from 'three';
+import * as THREE from 'three';
 import $ from 'jquery';
 import { EventEmitter } from 'events';
 import assign from 'object-assign';
@@ -10,10 +10,13 @@ import assign from 'object-assign';
 // resize(context) - called on resize
 // dispose - called when the context is about to be destroyed
 
+let gContextId = 0;
+
 class Context extends EventEmitter {
   constructor(container) {
     super();
     this.container = container;
+    this.contextId = gContextId++;
     this.isPaused = false;
 
     this.init();
@@ -63,8 +66,9 @@ class Context extends EventEmitter {
   }
 
   animate() {
-    if (this.disposed)
+    if (this.disposed) {
       return;
+    }
 
     requestAnimationFrame(this.animate.bind(this));
 
@@ -74,8 +78,9 @@ class Context extends EventEmitter {
     var now = new Date();
     this.emit('update', (now - this.time)/1000.0, this);
 
-    if (!this.emit('render', this))
+    if (!this.emit('render', this)) {
       this.renderDefaultCamera();
+    }
 
     this.time = now;
   }

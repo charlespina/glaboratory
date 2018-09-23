@@ -1,14 +1,15 @@
-var React = require('react');
-var ReactSlider = require('react-slider');
+import React from 'react';
+import ReactSlider from 'react-slider';
 
-var SliderInput = React.createClass({
-  getInitialState: function() {
-    return {
-      value: this.props.parameter.getValue()
-    }
-  },
+class SliderInput extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      value: this.props.parameter.getValue(),
+    };
+  }
 
-  isValidInput: function(v) {
+  isValidInput(v) {
     if (this.props.parameter.type == 'f') {
       v = parseFloat(v);
     } else if (this.props.parameter.type == 'i') {
@@ -18,15 +19,15 @@ var SliderInput = React.createClass({
     }
 
     return !isNaN(v);
-  },
+  }
 
-  onTextChange: function(e) {
+  onTextChange(e) {
     if (this.isValidInput(e.target.value))
       this.onTextChanged(e);
     this.setState({value: e.target.value});
-  },
+  }
 
-  onTextChanged: function(e) {
+  onTextChanged(e) {
     var value = e.target.value;
 
     if (this.props.parameter.type == 'f')
@@ -38,14 +39,14 @@ var SliderInput = React.createClass({
       this.setState({value: this.props.parameter.getValue()});
     else
       this.onChange(value);
-  },
+  }
 
-  onChange: function(value) {
+  onChange(value) {
     this.props.parameter.setValue(value);
     this.setState({value: value});
-  },
+  }
 
-  render: function() {
+  render() {
     var data = this.props.parameter;
     var step = data.step;
     if (step === undefined) {
@@ -62,20 +63,20 @@ var SliderInput = React.createClass({
               step={step}
               min={data.min === undefined? 0 : data.min}
               max={data.max === undefined? 1 : data.max}
-              onChange={this.onChange}
+              onChange={this.onChange.bind(this)}
               value={data.value} />
           </div>
           <div className="six wide column ui small input">
             <input value={this.state.value}
               type="text"
               pattern="[1234567890.]*"
-              onChange={this.onTextChange}
-              onBlur={this.onTextChanged} />
+              onChange={this.onTextChange.bind(this)}
+              onBlur={this.onTextChanged.bind(this)} />
           </div>
         </div>
       </div>
     );
   }
-});
+};
 
-module.exports = SliderInput;
+export default SliderInput;

@@ -1,6 +1,6 @@
 import { ActionTypes } from '../actions/Actions';
 import AppDispatcher from '../dispatchers/AppDispatcher';
-var EventEmitter = require('events').EventEmitter;
+import { EventEmitter } from 'events';
 
 class Store extends EventEmitter {
   constructor() {
@@ -47,8 +47,9 @@ class ExperimentStore extends Store {
   }
 
   setExperiment(experiment) {
-    if (this.currentExperiment)
-      this.teardownExperiment();
+    if (this.currentExperiment) {
+      // this.teardownExperiment();
+    }
 
     this.currentExperiment = experiment;
   }
@@ -56,11 +57,17 @@ class ExperimentStore extends Store {
   setupExperiment(context) {
     var exp = this.currentExperiment;
 
-    if (!exp)
+    if (!exp) {
+      console.warn('no experiment to setup');
       return;
+    }
 
-    if (exp.isSetup)
+    if (exp.isSetup) {
+      console.warn('experiment is already setup');
       return;
+    }
+
+    console.info('setting up experiment with', context && context.contextId);
 
     exp.setup(context);
 

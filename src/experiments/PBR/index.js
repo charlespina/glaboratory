@@ -2,7 +2,7 @@ import Experiment from '../../core/Experiment';
 import ShaderParameter from '../../core/ShaderParameter';
 import Parameter from '../../core/Parameter';
 import OBJLoader from '../../lib/OBJLoader';
-import THREE from 'three';
+import * as THREE from 'three';
 import vertShader from '../common/StandardTBN.vert';
 import fragShader from './shaders/PBR.frag';
 
@@ -122,4 +122,4 @@ class PBR extends Experiment {
   }
 }
 
-module.exports = new PBR();
+export default new PBR();

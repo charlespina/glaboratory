@@ -1,7 +1,7 @@
 import Experiment from '../../core/Experiment';
 import ShaderParameter from '../../core/ShaderParameter';
 import Parameter from '../../core/Parameter';
-import THREE from 'three';
+import * as THREE from 'three';
 import vertShader from '../common/Standard.vert';
 import fragShader from './shaders/ReflectionBlur.frag';
 import vdc from 'vdc';
@@ -91,4 +91,4 @@ class EnvironmentBlur extends Experiment {
   }
 }
 
-module.exports = new EnvironmentBlur();
+export default new EnvironmentBlur();

@@ -2,7 +2,7 @@ import SimBrush from './SimBrush';
 import ShaderParameter from '../../../core/ShaderParameter';
 import Parameter from '../../../core/Parameter';
 
-import THREE from 'three';
+import * as THREE from 'three';
 
 const BrushFrag = require('./shaders/BrushTip.frag');
 const SharedVert = require('./shaders/Shared.vert')

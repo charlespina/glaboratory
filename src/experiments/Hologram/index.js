@@ -9,8 +9,8 @@ import HologramVert from '../common/StandardTBN.vert';
 import Parameter from '../../core/Parameter';
 import ShaderParameter from '../../core/ShaderParameter';
 import OBJLoader from '../../lib/OBJLoader';
-import modelUrl from 'file!./geometry/KingKong.obj';
-import THREE from 'three';
+import modelUrl from 'file-loader!./geometry/KingKong.obj';
+import * as THREE from 'three';
 import thumbnail from './hologram.png';
 import RenderPipeline from '../common/render-pipeline/RenderPipeline';
 import ShaderPass from '../common/render-pipeline/ShaderPass';
@@ -202,4 +202,4 @@ class Hologram extends Experiment {
 }
 
 
-module.exports = new Hologram();
+export default new Hologram();

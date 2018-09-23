@@ -1,14 +1,14 @@
 import Experiment from '../../core/Experiment';
 import Trigger from '../../core/Trigger';
-import THREE from 'three';
+import * as THREE from 'three';
 import simpleVert from './shaders/simple.vert';
 import cupFrag from './shaders/cup.frag';
 import glowFrag from './shaders/glow.frag';
 import fluidFrag from './shaders/fluid.frag';
 import $ from 'jquery';
 
-var Solver = require('./Solver');
-var ColorMap = require('./ColorMap');
+import Solver from './Solver';
+import ColorMap from './ColorMap';
 
 Number.prototype.clamp = function(low, high) {
     return Math.min(Math.max(low, this), high);
@@ -104,7 +104,7 @@ class Tea extends Experiment {
     this.solver = new Solver(N, 0.0, 0.0005);
 
     {
-      var dataMaterial = new THREE.MeshBasicMaterial({ 
+      var dataMaterial = new THREE.MeshBasicMaterial({
         map: this.dataTexture,
         side: THREE.DoubleSide
       });
@@ -224,4 +224,4 @@ class Tea extends Experiment {
   }
 }
 
-module.exports = new Tea();
+export default new Tea();

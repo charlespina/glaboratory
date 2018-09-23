@@ -1,4 +1,4 @@
-import THREE from 'three';
+import * as THREE from 'three';
 import CopyPassFrag from './shaders/CopyPass.frag';
 import ShaderPass from './ShaderPass';
 

@@ -183,4 +183,4 @@ Solver.prototype.step = function(dt) {
     this.v_prev.clear();
 };
 
-module.exports = Solver;
+export default Solver;

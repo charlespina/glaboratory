@@ -1,57 +1,60 @@
-var React = require('react');
-var ReactDOM = require('react-dom');
+import React from 'react';
+import ReactDOM from 'react-dom';
 import Context from '../core/Context';
-var $ = require('jquery');
+import $ from 'jquery';
 
-var WebGLView = React.createClass({
-  render: function() {
+const once = false;
+
+class WebGLView extends React.Component {
+  render() {
     return <div className="context" ref="ctx"></div>;
-  },
+  }
 
-  getContext: function() {
+  getContext() {
     return this.ctx;
-  },
+  }
 
-  getContainer: function() {
+  getContainer() {
     return ReactDOM.findDOMNode(this.refs.ctx);
-  },
+  }
 
-  resize: function() {
+  resize() {
     if (this.ctx) {
       this.ctx.resize();
     }
-  },
+  }
 
-  init: function() {
+  init() {
     this.ctx = new Context(this.getContainer());
-  },
+  }
 
-  reset: function() {
-    this.dispose();
+  reset() {
+    // this.dispose();
     this.init();
-  },
+  }
 
-  dispose: function() {
+  dispose() {
     $(this.getContainer()).empty();
     if (this.ctx) {
       this.ctx.dispose();
       this.ctx = null;
     }
-  },
+  }
 
-  componentDidReceiveProps: function() {
+  componentWillReceiveProps() {
     $(window).resize(this.resize);
     this.reset();
-  },
+  }
 
-  componentDidMount: function() {
+  componentDidMount() {
     $(window).resize(this.resize);
     this.reset();
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
+    console.warn('unmounting webglview');
     this.dispose();
   }
-});
+};
 
-module.exports = WebGLView;
+export default WebGLView;

@@ -1,23 +1,22 @@
-var React = require('react');
-var ReactRouter = require('react-router');
+import React from 'react';
+import { Link } from 'react-router-dom';
 import ExperimentActions from '../actions/ExperimentActions';
-var Link = ReactRouter.Link;
 
-var ContentPanel = require('./ContentPanel.react');
-var Sidebar = require('./Sidebar.react');
+import ContentPanel from './ContentPanel.react';
+import Sidebar from './Sidebar.react';
 
 import ExperimentStore from '../stores/ExperimentStore';
 
-var ExperimentDetail = React.createClass({
-  componentDidMount: function() {
-    this.setExperiment(this.props.params.experimentName);
-  },
+class ExperimentDetail extends React.Component {
+  componentDidMount() {
+    this.setExperiment(this.props.experimentName);
+  }
 
-  componentDidReceiveProps: function(props) {
-    this.setExperiment(props.params.experimentName);
-  },
+  componentWillReceiveProps(props) {
+    this.setExperiment(props.experimentName);
+  }
 
-  setExperiment: function(name) {
+  setExperiment(name) {
     var experimentName = name.replace(/\+/g, ' ');
     var experiments = ExperimentStore.experiments;
     var activeExperimentIndex = 0;
@@ -28,10 +27,10 @@ var ExperimentDetail = React.createClass({
     });
     var activeExperiment = experiments[activeExperimentIndex];
     ExperimentActions.setExperiment(activeExperiment);
-  },
+  }
 
-  render: function() {
-    var expName = this.props.params.experimentName.replace(/\+/g, ' ');
+  render() {
+    var expName = this.props.experimentName.replace(/\+/g, ' ');
     return (
       <div className="experiment-detail">
         <div className="topbar">
@@ -48,7 +47,7 @@ var ExperimentDetail = React.createClass({
       </div>
     );
   }
-});
+};
 
 
-module.exports = ExperimentDetail;
+export default ExperimentDetail;

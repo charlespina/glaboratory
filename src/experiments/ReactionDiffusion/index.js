@@ -7,7 +7,7 @@ import TextureUtils from '../common/TextureUtils';
 import BrushTip from '../common/painting/BrushTip';
 import ReactionDiffusionBrush from './sim-brushes/ReactionDiffusionBrush';
 import PaintBrush from '../common/painting/PaintBrush';
-import THREE from 'three';
+import * as THREE from 'three';
 var DisplayFrag = require('./shaders/Display.frag');
 var SharedVert = require('../common/painting/shaders/Shared.vert');
 
@@ -246,4 +246,4 @@ class ReactionDiffusion extends Experiment {
   }
 }
 
-module.exports = new ReactionDiffusion();
+export default new ReactionDiffusion();

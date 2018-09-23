@@ -1,10 +1,13 @@
 import ExperimentStore from '../stores/ExperimentStore';
-var React = require('react');
-var ReactRouter = require('react-router');
-var Link = ReactRouter.Link;
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
-var ExperimentIndex = React.createClass({
-  render: function() {
+export default class ExperimentIndex extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
     var experiments = ExperimentStore.experiments;
     var experimentList = experiments.map(function(exp, i) {
       return (
@@ -39,6 +42,4 @@ var ExperimentIndex = React.createClass({
       </div>
     );
   }
-});
-
-module.exports = ExperimentIndex;
+}
