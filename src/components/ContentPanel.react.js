@@ -1,33 +1,35 @@
-var React = require('react');
-var WebGLView = require('./WebGLView.react');
+import React from 'react';
+import WebGLView from './WebGLView.react';
 import ExperimentStore from '../stores/ExperimentStore';
 import ExperimentActions from '../actions/ExperimentActions';
-var keycode = require('keycode');
+import keycode from 'keycode';
 
-var ContentPanel = React.createClass({
-  getState: function() {
+class ContentPanel extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = this.getState();
+  }
+
+  getState() {
     return {
       experiment: ExperimentStore.currentExperiment
     }
-  },
+  }
 
-  updateState: function() {
+  updateState() {
     if (this.state.experiment !== ExperimentStore.currentExperiment) {
       if (ExperimentStore.currentExperiment) this.init();
     }
     this.setState(this.getState());
-  },
+  }
 
-  getInitialState: function() {
-    return this.getState();
-  },
-
-  init: function() {
+  init() {
     var context = this.refs.view.getContext();
     setTimeout(ExperimentActions.setupExperiment.bind(ExperimentActions, context));
-  },
+  }
 
-  onKeyPress: function(e) {
+  onKeyPress(e) {
     if (!this.state.experiment)
       return;
 
@@ -36,24 +38,24 @@ var ContentPanel = React.createClass({
         param.fire();
       }
     });
-  },
+  }
 
-  componentDidMount: function() {
-    ExperimentStore.addChangeListener(this.updateState);
-    $(window).on('keydown', this.onKeyPress);
-  },
+  componentDidMount() {
+    ExperimentStore.addChangeListener(this.updateState.bind(this));
+    $(window).on('keydown', this.onKeyPress.bind(this));
+  }
 
-  componentWillReceiveProps: function(props) {
+  componentWillReceiveProps(props) {
     // this.refs.view.reset();
     this.updateState();
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     ExperimentStore.removeChangeListener(this.updateState);
     $(window).off('keydown', this.onKeyPress);
-  },
+  }
 
-  render: function() {
+  render() {
     var hotKeys;
     var experiment = this.state.experiment;
     if (experiment) {
@@ -95,6 +97,6 @@ var ContentPanel = React.createClass({
       </div>
     );
   }
-});
+};
 
 export default ContentPanel;

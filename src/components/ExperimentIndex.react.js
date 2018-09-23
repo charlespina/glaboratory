@@ -1,11 +1,17 @@
 import ExperimentStore from '../stores/ExperimentStore';
-var React = require('react');
-var ReactRouter = require('react-router');
-var Link = ReactRouter.Link;
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
-var ExperimentIndex = React.createClass({
-  render: function() {
+console.log('react component', Component);
+
+export default class ExperimentIndex extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
     var experiments = ExperimentStore.experiments;
+    console.log('experiments', experiments);
     var experimentList = experiments.map(function(exp, i) {
       return (
         <Link to={"exp/"+exp.name} key={i} className="ui card">
@@ -39,6 +45,4 @@ var ExperimentIndex = React.createClass({
       </div>
     );
   }
-});
-
-export default ExperimentIndex;
+}

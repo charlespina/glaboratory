@@ -10,12 +10,14 @@ export default function loadHdrTexture(url) {
   const promise = new Promise((resolve, reject) => {
     request.get(url)
     .on('request', function () {
-      this.xhr.responseType = 'arraybuffer'; 
+      this.xhr.responseType = 'arraybuffer';
     })
     .end((err, res) => {
       if (err) {
         return reject(err);
       }
+
+      console.log(res);
 
       const hdr = parseHdr(res.body);
       const tex = new THREE.DataTexture(hdr.data, hdr.shape[0], hdr.shape[1], THREE.RGBAFormat, THREE.FloatType)

@@ -63,8 +63,9 @@ class Context extends EventEmitter {
   }
 
   animate() {
-    if (this.disposed)
+    if (this.disposed) {
       return;
+    }
 
     requestAnimationFrame(this.animate.bind(this));
 

@@ -1,6 +1,6 @@
 import { ActionTypes } from '../actions/Actions';
 import AppDispatcher from '../dispatchers/AppDispatcher';
-var EventEmitter = require('events').EventEmitter;
+import { EventEmitter } from 'events';
 
 class Store extends EventEmitter {
   constructor() {

@@ -1,50 +1,46 @@
-var React = require('react');
-var ReactDOM = require('react-dom');
-var ColorPicker = require('react-color-picker');
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { ChromePicker as ColorPicker } from 'react-color';
 
-var ColorPickerInput = React.createClass({
-  handleToggle: function(e) {
+class ColorPickerInput extends React.Component {
+  handleToggle(e) {
     e.stopPropagation();
     e.preventDefault();
-  },
+  }
 
-  componentDidMount: function() {
+  componentDidMount() {
     $(ReactDOM.findDOMNode(this.refs.input)).popup({
       on: 'click',
       position: 'bottom center',
       lastResort: 'bottom center'
     });
     this.width = $(ReactDOM.findDOMNode(this.refs.input)).width();
-  },
+  }
 
-  componentWillUpdate: function() {
+  componentWillUpdate() {
     this.width = $(ReactDOM.findDOMNode(this.refs.input)).width();
-  },
+  }
 
-  componentWillUnmount: function() {
-  },
+  componentWillUnmount() {
+  }
 
-  onChange: function(value) {
+  onChange(value) {
     // re-use existing color structure
     var c = this.props.parameter.getValue();
-    c.setHex(value.replace("#", "0x"));
+    c.setHex(value.hex.replace("#", "0x"));
 
     this.props.parameter.setValue(c)
     this.forceUpdate();
-  },
+  }
 
-  render: function() {
+  render() {
     var width = this.width;
     var colorPickerModal = (
       <div>
         <div className="content">
-          <ColorPicker defaultValue={this.props.parameter.getValue().getHexString()}
-            onChange={this.onChange}
-            saturationWidth={130}
-            saturationHeight={130}
-            hueWidth={20}
-            hueHeight={130}
-            onDrag={this.onChange} />
+          <ColorPicker color={this.props.parameter.getValue().getHexString()}
+            onChangeComplete={this.onChange.bind(this)}
+            onChange={this.onChange.bind(this)} />
         </div>
       </div>
     );
@@ -67,6 +63,6 @@ var ColorPickerInput = React.createClass({
       </div>
     );
   }
-});
+};
 
 export default ColorPickerInput;

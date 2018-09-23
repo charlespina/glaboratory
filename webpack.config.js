@@ -43,4 +43,9 @@ module.exports = {
     filename: "./js/app.js",
     path: __dirname + "/public"
   },
+  devtool: 'inline-source-map',
+  devServer: {
+    // publicPath: 
+    contentBase: path.join(__dirname, "public"),
+  },
 };
