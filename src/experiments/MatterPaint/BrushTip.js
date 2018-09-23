@@ -1,7 +1,7 @@
 import standardVert from "../common/StandardRaw.vert";
 import brushTipFrag from "./shaders/BrushTip.frag";
 import Compute from "../common/compute/Compute";
-import THREE from "three";
+import * as THREE from "three";
 
 export default class BrushTip {
   constructor(renderSystem, resolution) {

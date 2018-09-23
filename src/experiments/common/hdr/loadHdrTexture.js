@@ -1,6 +1,6 @@
 import request from 'superagent';
 import parseHdr from './parseHdr';
-import THREE from 'three';
+import * as THREE from 'three';
 
 export default function loadHdrTexture(url) {
   request.parse['application/octet-stream'] = (obj) => {
@@ -16,8 +16,6 @@ export default function loadHdrTexture(url) {
       if (err) {
         return reject(err);
       }
-
-      console.log(res);
 
       const hdr = parseHdr(res.body);
       const tex = new THREE.DataTexture(hdr.data, hdr.shape[0], hdr.shape[1], THREE.RGBAFormat, THREE.FloatType)

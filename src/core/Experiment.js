@@ -30,6 +30,7 @@ class Experiment {
 
   render(context) {
     // TO BE OVERWRITTEN, OPTIONALLY
+    console.log('render default');
     context.renderDefaultCamera();
   }
 

@@ -1,6 +1,6 @@
 import Experiment from '../../core/Experiment';
 import Parameter from '../../core/Parameter';
-import THREE from 'three';
+import * as THREE from 'three';
 
 class HelloWorld extends Experiment {
   constructor() {

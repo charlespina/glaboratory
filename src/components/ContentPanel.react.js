@@ -26,7 +26,7 @@ class ContentPanel extends React.Component {
 
   init() {
     var context = this.refs.view.getContext();
-    setTimeout(ExperimentActions.setupExperiment.bind(ExperimentActions, context));
+    setTimeout(() => ExperimentActions.setupExperiment(context));
   }
 
   onKeyPress(e) {

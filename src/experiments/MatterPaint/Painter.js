@@ -2,7 +2,7 @@ import Compute from "../common/compute/Compute";
 import RenderUtil from "../common/compute/RenderUtil";
 import standardVert from "../common/StandardRaw.vert";
 import paintFrag from "./shaders/Paint.frag";
-import THREE from "three";
+import * as THREE from "three";
 
 export default class Painter {
   constructor(brushTip, renderSystem, resolution,

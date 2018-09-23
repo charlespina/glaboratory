@@ -45,7 +45,8 @@ module.exports = {
   },
   devtool: 'inline-source-map',
   devServer: {
-    // publicPath: 
+    publicPath: '/',
+    historyApiFallback: true, // so reloads will try to access index.html on failure, to allow react to respond
     contentBase: path.join(__dirname, "public"),
   },
 };

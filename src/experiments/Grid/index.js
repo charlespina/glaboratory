@@ -3,7 +3,7 @@ import GridFrag from './shaders/Grid.frag';
 import GridVert from '../common/StandardTBN.vert';
 import Parameter from '../../core/Parameter';
 import ShaderParameter from '../../core/ShaderParameter';
-import THREE from 'three';
+import * as THREE from 'three';
 import thumbnail from './grid.png';
 
 class Grid extends Experiment {

@@ -5,7 +5,7 @@ import PhotoVert from '../common/StandardTBN.vert';
 import imageURL from './textures/red-fox-300x400.jpg';
 import thumbnailURL from './textures/thumbnail.png';
 import ShaderParameter from '../../core/ShaderParameter';
-import THREE from 'three';
+import * as THREE from 'three';
 
 const photoUniforms = {
   "grain_size": {

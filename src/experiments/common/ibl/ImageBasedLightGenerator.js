@@ -1,5 +1,5 @@
 import vdc from 'vdc';
-import THREE from 'three';
+import * as THREE from 'three';
 import Compute from '../compute/Compute';
 import RenderUtil from '../compute/RenderUtil';
 import StandardRawVert from '../StandardRaw.vert';

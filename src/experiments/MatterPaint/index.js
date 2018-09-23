@@ -15,7 +15,7 @@ import pbrVert from "./shaders/PhysicallyBased.vert";
 
 import Experiment from '../../core/Experiment';
 import Parameter from '../../core/Parameter';
-import THREE from 'three';
+import * as THREE from 'three';
 
 class MatterPaint extends Experiment {
   constructor() {

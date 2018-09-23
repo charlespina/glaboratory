@@ -1,6 +1,6 @@
 import Experiment from '../../core/Experiment';
 import Parameter from '../../core/Parameter';
-import THREE from 'three';
+import * as THREE from 'three';
 import simulationVertShader from './shaders/Simulation.vert';
 import simulationFragShader from './shaders/Simulation.frag';
 import displayVertShader from './shaders/Display.vert';
@@ -19,8 +19,8 @@ class Simulation {
     const framebufferSettings = {
       minFilter: THREE.LinearFilter,
       magFilter: THREE.LinearFilter,
-      wrapS: THREE.RenderTargetWrapping,
-      wrapT: THREE.RenderTargetWrapping,
+      // wrapS: THREE.RenderTargetWrapping,
+      // wrapT: THREE.RenderTargetWrapping,
       format: THREE.RGBAFormat,
       stencilBuffer: false,
       depthBuffer: false,

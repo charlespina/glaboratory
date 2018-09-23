@@ -1,7 +1,7 @@
 import Experiment from '../../core/Experiment';
 import Parameter from '../../core/Parameter';
 import ShaderParameter from '../../core/ShaderParameter';
-import THREE from 'three';
+import * as THREE from 'three';
 import iblMapUrl from '../HDR/textures/Newport_Loft_Ref.hdr';
 //import iblMapUrl from '../HDR/textures/Default.hdr';
 import { generateImageBasedLight } from '../common/ibl/ImageBasedLightGenerator';

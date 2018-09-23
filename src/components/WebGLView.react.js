@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import Context from '../core/Context';
 import $ from 'jquery';
 
+const once = false;
+
 class WebGLView extends React.Component {
   render() {
     return <div className="context" ref="ctx"></div>;
@@ -27,7 +29,7 @@ class WebGLView extends React.Component {
   }
 
   reset() {
-    this.dispose();
+    // this.dispose();
     this.init();
   }
 
@@ -50,6 +52,7 @@ class WebGLView extends React.Component {
   }
 
   componentWillUnmount() {
+    console.warn('unmounting webglview');
     this.dispose();
   }
 };

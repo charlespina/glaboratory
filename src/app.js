@@ -1,5 +1,5 @@
 import ExperimentStore from './stores/ExperimentStore';
-import THREE from 'three';
+import * as THREE from 'three';
 
 require("./css/main.scss");
 

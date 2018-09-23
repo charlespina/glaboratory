@@ -1,4 +1,4 @@
-import THREE from 'three';
+import * as THREE from 'three';
 
 function swapBuffers(buffers) {
   var tmp = buffers[1];
@@ -23,8 +23,8 @@ export default {
   renderTextureSettings: {
     minFilter: THREE.LinearFilter,
     magFilter: THREE.LinearFilter,
-    wrapS: THREE.RenderTargetWrapping,
-    wrapT: THREE.RenderTargetWrapping,
+    // wrapS: THREE.RenderTargetWrapping,
+    // wrapT: THREE.RenderTargetWrapping,
     format: THREE.RGBFormat,
     stencilBuffer: false,
     depthBuffer: false,

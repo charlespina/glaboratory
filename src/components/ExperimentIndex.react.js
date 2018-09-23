@@ -2,8 +2,6 @@ import ExperimentStore from '../stores/ExperimentStore';
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
-console.log('react component', Component);
-
 export default class ExperimentIndex extends Component {
   constructor(props) {
     super(props);
@@ -11,7 +9,6 @@ export default class ExperimentIndex extends Component {
 
   render() {
     var experiments = ExperimentStore.experiments;
-    console.log('experiments', experiments);
     var experimentList = experiments.map(function(exp, i) {
       return (
         <Link to={"exp/"+exp.name} key={i} className="ui card">

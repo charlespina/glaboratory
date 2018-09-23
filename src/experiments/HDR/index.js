@@ -8,7 +8,7 @@ import bgVertShader from '../common/StandardRawTBN.vert';
 import vertShader from '../common/StandardTBN.vert';
 import loadHdrTexture from '../common/hdr/loadHdrTexture';
 import { EventEmitter } from 'events';
-import THREE from 'three';
+import * as THREE from 'three';
 import thumbnail from './thumbnail.png';
 
 // glsl-rgbe2rgb
