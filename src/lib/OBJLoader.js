@@ -385,4 +385,4 @@ OBJLoader.prototype = {
 
 };
 
-module.exports = OBJLoader;
+export default OBJLoader;

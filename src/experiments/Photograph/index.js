@@ -98,4 +98,4 @@ class Photograph extends Experiment {
 }
 
 
-module.exports = new Photograph();
+export default new Photograph();

@@ -54,4 +54,4 @@ var WebGLView = React.createClass({
   }
 });
 
-module.exports = WebGLView;
+export default WebGLView;

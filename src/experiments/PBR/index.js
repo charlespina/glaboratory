@@ -122,4 +122,4 @@ class PBR extends Experiment {
   }
 }
 
-module.exports = new PBR();
+export default new PBR();

@@ -48,4 +48,4 @@ ColorMap.prototype.sample = function(t) {
   return [lerp(A.r, B.r, t1), lerp(A.g, B.g, t1), lerp(A.b, B.b, t1)];
 };
 
-module.exports = ColorMap;
+export default ColorMap;

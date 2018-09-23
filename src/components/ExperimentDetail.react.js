@@ -51,4 +51,4 @@ var ExperimentDetail = React.createClass({
 });
 
 
-module.exports = ExperimentDetail;
+export default ExperimentDetail;

@@ -172,4 +172,4 @@ class PBRIBL extends Experiment {
 }
 
 
-module.exports = new PBRIBL();
+export default new PBRIBL();

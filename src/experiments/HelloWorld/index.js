@@ -25,4 +25,4 @@ class HelloWorld extends Experiment {
 }
 
 
-module.exports = new HelloWorld();
+export default new HelloWorld();

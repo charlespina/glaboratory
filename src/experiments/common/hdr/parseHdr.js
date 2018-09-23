@@ -212,4 +212,4 @@ function parseHdr(buffer) {
   }
 }
 
-module.exports = parseHdr;
+export default parseHdr;

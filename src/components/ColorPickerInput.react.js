@@ -69,4 +69,4 @@ var ColorPickerInput = React.createClass({
   }
 });
 
-module.exports = ColorPickerInput;
+export default ColorPickerInput;

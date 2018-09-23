@@ -93,15 +93,15 @@ class SimBrush {
   }
 
   // interface
-  get uniforms() : object {
+  get uniforms() {
     throw new Error("Not implemented.");
   }
 
-  get vertexShader() : string {
+  get vertexShader() {
     throw new Error("Not implemented.");
   }
 
-  get fragmentShader() : string {
+  get fragmentShader() {
     throw new Error("Not implemented.");
   }
 
@@ -126,7 +126,7 @@ class SimBrush {
     throw new Error("Not implemented.");
   }
 
-  getPresets() : array {
+  getPresets() {
     throw new Error("Not implemented.");
   }
 

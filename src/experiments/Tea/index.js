@@ -224,4 +224,4 @@ class Tea extends Experiment {
   }
 }
 
-module.exports = new Tea();
+export default new Tea();

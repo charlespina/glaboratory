@@ -196,4 +196,4 @@ class MatterPaint extends Experiment {
   }
 }
 
-module.exports = new MatterPaint();
+export default new MatterPaint();

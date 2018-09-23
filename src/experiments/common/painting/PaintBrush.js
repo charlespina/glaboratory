@@ -17,15 +17,15 @@ export default class PaintBrush extends SimBrush {
     this.setUniform(this._uniforms.canvas_texture, this.buffer[1]);
   }
 
-  get uniforms() : object {
+  get uniforms() {
     return this._uniforms;
   }
 
-  get vertexShader() : string {
+  get vertexShader() {
     return SharedVert;
   }
 
-  get fragmentShader() : string {
+  get fragmentShader() {
     return PaintBrushFrag;
   }
 

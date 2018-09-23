@@ -41,4 +41,4 @@ class Grid extends Experiment {
 }
 
 
-module.exports = new Grid();
+export default new Grid();

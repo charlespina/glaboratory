@@ -246,4 +246,4 @@ class ReactionDiffusion extends Experiment {
   }
 }
 
-module.exports = new ReactionDiffusion();
+export default new ReactionDiffusion();

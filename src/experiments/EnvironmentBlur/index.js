@@ -91,4 +91,4 @@ class EnvironmentBlur extends Experiment {
   }
 }
 
-module.exports = new EnvironmentBlur();
+export default new EnvironmentBlur();

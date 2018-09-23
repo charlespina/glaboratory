@@ -41,4 +41,4 @@ var ExperimentIndex = React.createClass({
   }
 });
 
-module.exports = ExperimentIndex;
+export default ExperimentIndex;

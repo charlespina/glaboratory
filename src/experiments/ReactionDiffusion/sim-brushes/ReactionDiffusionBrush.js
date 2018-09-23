@@ -18,15 +18,15 @@ export default class ReactionDiffusionBrush extends SimBrush {
     this.initParams();
   }
 
-  get uniforms() : object {
+  get uniforms() {
     return this._uniforms;
   }
 
-  get vertexShader() : string {
+  get vertexShader() {
     return SharedVert;
   }
 
-  get fragmentShader() : string {
+  get fragmentShader() {
     return ComputeFrag;
   }
 

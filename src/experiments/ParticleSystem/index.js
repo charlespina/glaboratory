@@ -304,4 +304,4 @@ class ParticleSystem extends Experiment {
   }
 }
 
-module.exports = new ParticleSystem();
+export default new ParticleSystem();

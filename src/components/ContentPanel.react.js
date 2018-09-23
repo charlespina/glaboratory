@@ -97,4 +97,4 @@ var ContentPanel = React.createClass({
   }
 });
 
-module.exports = ContentPanel;
+export default ContentPanel;

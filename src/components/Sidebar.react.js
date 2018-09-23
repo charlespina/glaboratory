@@ -185,4 +185,4 @@ var Sidebar = React.createClass({
   }
 });
 
-module.exports = Sidebar;
+export default Sidebar;

@@ -78,4 +78,4 @@ var SliderInput = React.createClass({
   }
 });
 
-module.exports = SliderInput;
+export default SliderInput;

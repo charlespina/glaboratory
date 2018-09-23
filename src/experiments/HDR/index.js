@@ -115,4 +115,4 @@ class HDR extends Experiment {
 }
 
 
-module.exports = new HDR();
+export default new HDR();
