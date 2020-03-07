@@ -18,7 +18,7 @@
     "del": "^2.1.0",
     "es6-promise": "^2.0.1",
     "events": "^1.0.2",
-    "express": "~4.10.4",
+    "express": "^4.17.1",
     "extend": "^2.0.0",
     "file-loader": "^2.0.0",
     "flux": "^2.1.1",
@@ -70,5 +70,8 @@
   "author": "Charles Pina",
   "bugs": {
     "url": "TBD"
+  },
+  "dependencies": {
+    "gulp": "^3.9.1"
   }
 }
