@@ -26,7 +26,7 @@
     "glsl-noise": "0.0.0",
     "glslify": "^5.0.2",
     "glslify-loader": "https://github.com/charlespina/glslify-loader.git",
-    "jquery": "^2.1.3",
+    "jquery": "^3.5.0",
     "jsx-loader": "^0.13.2",
     "keycode": "^2.1.0",
     "keymirror": "^0.1.0",
