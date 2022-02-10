@@ -33,7 +33,7 @@
     "map-stream": "0.0.6",
     "merge": "^1.2.0",
     "minimist": "~1.1.0",
-    "node-sass": "^4.9.3",
+    "node-sass": "^7.0.0",
     "object-assign": "^2.0.0",
     "raw-loader": "^0.5.1",
     "react": "^16.5.2",
