@@ -11,7 +11,8 @@ module.exports = {
       },
       {
         test: /\.html$/,
-        use: "file-loader?name=[name].[ext]",
+        type: 'asset/resource',
+        generator: { filename: '[name][ext]' },
       },
       {
         test: /\.js$/,
@@ -25,7 +26,7 @@ module.exports = {
       },
       {
         test: /\.(jpg|png|gif|hdr)$/,
-        use: "file-loader",
+        type: 'asset/resource',
       },
       {
         test: /\.(frag|vert|glsl)$/,
@@ -41,12 +42,14 @@ module.exports = {
   },
   output: {
     filename: "./js/app.js",
-    path: __dirname + "/public"
+    path: __dirname + "/public",
+    publicPath: '/',
   },
   devtool: 'inline-source-map',
   devServer: {
-    publicPath: '/',
-    historyApiFallback: true, // so reloads will try to access index.html on failure, to allow react to respond
-    contentBase: path.join(__dirname, "public"),
+    static: {
+      directory: path.join(__dirname, "public"),
+    },
+    historyApiFallback: true,
   },
 };
